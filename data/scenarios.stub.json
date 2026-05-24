@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "persona": "Geneva resident commuting to a Lausanne tech job",
+    "region": "Romandie",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8501008",
+      "name": "Genève",
+      "queries": [
+        {"text": "gen", "style": "prefix"},
+        {"text": "geneva", "style": "cross-language", "language": "EN"},
+        {"text": "genf", "style": "cross-language", "language": "DE"},
+        {"text": "GE", "style": "abbreviation"}
+      ]
+    },
+    "to": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {"text": "laus", "style": "prefix"},
+        {"text": "losanna", "style": "cross-language", "language": "IT"},
+        {"text": "lausnne", "style": "typo"},
+        {"text": "LS", "style": "abbreviation"}
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "persona": "Zurich commuter to Bern HQ",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8503000",
+      "name": "Zürich HB",
+      "queries": [
+        {"text": "zur", "style": "prefix"},
+        {"text": "zurich", "style": "cross-language", "language": "EN"},
+        {"text": "zhhb", "style": "substring"},
+        {"text": "hb", "style": "substring"},
+        {"text": "ZUE", "style": "abbreviation"}
+      ]
+    },
+    "to": {
+      "uic": "8507000",
+      "name": "Bern",
+      "queries": [
+        {"text": "bern", "style": "prefix"},
+        {"text": "berne", "style": "cross-language", "language": "FR"},
+        {"text": "BN", "style": "abbreviation"}
+      ]
+    }
+  }
+]

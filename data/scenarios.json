@@ -1,0 +1,4456 @@
+[
+  {
+    "id": 1,
+    "persona": "Geneva resident commuting to a Lausanne tech job",
+    "region": "Romandie",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8501008",
+      "name": "Genève",
+      "queries": [
+        {
+          "text": "gen",
+          "style": "prefix"
+        },
+        {
+          "text": "geneva",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "genf",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "ginevra",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "GE",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {
+          "text": "laus",
+          "style": "prefix"
+        },
+        {
+          "text": "losanna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "LS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "persona": "Lausanne UNIL student visiting family in Sion",
+    "region": "Romandie",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {
+          "text": "lsne",
+          "style": "typo"
+        },
+        {
+          "text": "lausanne",
+          "style": "prefix"
+        },
+        {
+          "text": "LS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501506",
+      "name": "Sion",
+      "queries": [
+        {
+          "text": "sion",
+          "style": "prefix"
+        },
+        {
+          "text": "sitten",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "SIO",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "persona": "Romandie tourist heading from Lausanne to Brig",
+    "region": "Romandie",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {
+          "text": "lau",
+          "style": "prefix"
+        },
+        {
+          "text": "losanna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "LS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501609",
+      "name": "Brig",
+      "queries": [
+        {
+          "text": "brig",
+          "style": "prefix"
+        },
+        {
+          "text": "brigue",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "persona": "Geneva expat flying out of Cointrin",
+    "region": "Aéroport",
+    "pattern": "Airport",
+    "from": {
+      "uic": "8501008",
+      "name": "Genève",
+      "queries": [
+        {
+          "text": "gen",
+          "style": "prefix"
+        },
+        {
+          "text": "cornavin",
+          "style": "substring"
+        },
+        {
+          "text": "geneva",
+          "style": "cross-language",
+          "language": "EN"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501026",
+      "name": "Genève-Aéroport",
+      "queries": [
+        {
+          "text": "aéroport",
+          "style": "substring"
+        },
+        {
+          "text": "geneve airport",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "GEAP",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "persona": "Zurich banker commuting from suburb to HB",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8503100",
+      "name": "Zollikon",
+      "queries": [
+        {
+          "text": "zoll",
+          "style": "prefix"
+        },
+        {
+          "text": "zolikon",
+          "style": "typo"
+        },
+        {
+          "text": "ZK",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503000",
+      "name": "Zürich HB",
+      "queries": [
+        {
+          "text": "zur",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "zurigo",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "hb",
+          "style": "substring"
+        },
+        {
+          "text": "ZUE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "persona": "ETH student going from Zurich HB to airport",
+    "region": "Aéroport",
+    "pattern": "Airport",
+    "from": {
+      "uic": "8503000",
+      "name": "Zürich HB",
+      "queries": [
+        {
+          "text": "zh hb",
+          "style": "substring"
+        },
+        {
+          "text": "zurich",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "ZUE",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503016",
+      "name": "Zürich Flughafen",
+      "queries": [
+        {
+          "text": "flug",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich airport",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "ZFH",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "persona": "Basel pharma exec hopping from SBB station to the Barfüsserplatz tram",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8500010",
+      "name": "Basel SBB",
+      "queries": [
+        {
+          "text": "basel",
+          "style": "prefix"
+        },
+        {
+          "text": "bâle",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "basilea",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "BS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8500897",
+      "name": "Basel, Barfüsserplatz",
+      "queries": [
+        {
+          "text": "barfu",
+          "style": "prefix"
+        },
+        {
+          "text": "barfusser",
+          "style": "substring"
+        },
+        {
+          "text": "barfüsserplatz",
+          "style": "substring"
+        },
+        {
+          "text": "BSBP",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "persona": "Bernese federal employee day-tripping to Zurich",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8507000",
+      "name": "Bern",
+      "queries": [
+        {
+          "text": "bern",
+          "style": "prefix"
+        },
+        {
+          "text": "berne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "berna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "BN",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503000",
+      "name": "Zürich HB",
+      "queries": [
+        {
+          "text": "zur",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "zurigo",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "ZUE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "persona": "Luzern hotel concierge sending guest to Interlaken",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8505000",
+      "name": "Luzern",
+      "queries": [
+        {
+          "text": "luz",
+          "style": "prefix"
+        },
+        {
+          "text": "lucerne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "lucerna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "LZ",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507492",
+      "name": "Interlaken Ost",
+      "queries": [
+        {
+          "text": "interl",
+          "style": "prefix"
+        },
+        {
+          "text": "interlaken o",
+          "style": "substring"
+        },
+        {
+          "text": "IO",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "persona": "Italian-speaking nurse in Mendrisio commuting to Lugano",
+    "region": "Ticino",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8505305",
+      "name": "Mendrisio",
+      "queries": [
+        {
+          "text": "men",
+          "style": "prefix"
+        },
+        {
+          "text": "mendris",
+          "style": "prefix"
+        },
+        {
+          "text": "MEN",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505300",
+      "name": "Lugano",
+      "queries": [
+        {
+          "text": "lug",
+          "style": "prefix"
+        },
+        {
+          "text": "lugaano",
+          "style": "typo"
+        },
+        {
+          "text": "LG",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "persona": "St. Gallen embroidery wholesaler heading to Zurich",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8506302",
+      "name": "St. Gallen",
+      "queries": [
+        {
+          "text": "st g",
+          "style": "prefix"
+        },
+        {
+          "text": "st-gall",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "san gallo",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "SG",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503000",
+      "name": "Zürich HB",
+      "queries": [
+        {
+          "text": "zürich",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "ZUE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "persona": "Chur retiree visiting daughter in Zurich",
+    "region": "Graubünden/Valais",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8509000",
+      "name": "Chur",
+      "queries": [
+        {
+          "text": "chur",
+          "style": "prefix"
+        },
+        {
+          "text": "coire",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "coira",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "CH",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503000",
+      "name": "Zürich HB",
+      "queries": [
+        {
+          "text": "zur",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich hb",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "ZUE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "persona": "Winterthur business traveller flying out of Zurich Airport",
+    "region": "Aéroport",
+    "pattern": "Airport",
+    "from": {
+      "uic": "8506000",
+      "name": "Winterthur",
+      "queries": [
+        {
+          "text": "wint",
+          "style": "prefix"
+        },
+        {
+          "text": "winterhur",
+          "style": "typo"
+        },
+        {
+          "text": "W",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503016",
+      "name": "Zürich Flughafen",
+      "queries": [
+        {
+          "text": "flug",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich airport",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "flughafen",
+          "style": "prefix"
+        },
+        {
+          "text": "ZFH",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "persona": "Olten railway dispatcher dropping by Basel headquarters",
+    "region": "Mittelland",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8500218",
+      "name": "Olten",
+      "queries": [
+        {
+          "text": "olt",
+          "style": "prefix"
+        },
+        {
+          "text": "oltn",
+          "style": "typo"
+        },
+        {
+          "text": "OL",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8500010",
+      "name": "Basel SBB",
+      "queries": [
+        {
+          "text": "basel",
+          "style": "prefix"
+        },
+        {
+          "text": "bâle",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "basilea",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "BS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "persona": "Biel/Bienne watchmaker traveling to Bern",
+    "region": "Mittelland",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8504300",
+      "name": "Biel/Bienne",
+      "queries": [
+        {
+          "text": "biel",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "bienne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "biel bienne",
+          "style": "substring"
+        },
+        {
+          "text": "BI",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507000",
+      "name": "Bern",
+      "queries": [
+        {
+          "text": "bern",
+          "style": "prefix"
+        },
+        {
+          "text": "berne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BN",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "persona": "Fribourgois civil servant commuting to Bern",
+    "region": "Mittelland",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8504100",
+      "name": "Fribourg/Freiburg",
+      "queries": [
+        {
+          "text": "fri",
+          "style": "prefix"
+        },
+        {
+          "text": "fribourg",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "freiburg",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "friburgo",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "FRI",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507000",
+      "name": "Bern",
+      "queries": [
+        {
+          "text": "ber",
+          "style": "prefix"
+        },
+        {
+          "text": "berne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BN",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "persona": "Neuchâtel watch designer flying via Geneva Cointrin",
+    "region": "Aéroport",
+    "pattern": "Airport",
+    "from": {
+      "uic": "8504221",
+      "name": "Neuchâtel",
+      "queries": [
+        {
+          "text": "neuc",
+          "style": "prefix"
+        },
+        {
+          "text": "neuenburg",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "NE",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501026",
+      "name": "Genève-Aéroport",
+      "queries": [
+        {
+          "text": "aéroport",
+          "style": "substring"
+        },
+        {
+          "text": "cointrin",
+          "style": "substring"
+        },
+        {
+          "text": "geneve airport",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "GEAP",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "persona": "Locarno film festival visitor heading to Bellinzona",
+    "region": "Ticino",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8505400",
+      "name": "Locarno",
+      "queries": [
+        {
+          "text": "loc",
+          "style": "prefix"
+        },
+        {
+          "text": "locrno",
+          "style": "typo"
+        },
+        {
+          "text": "LO",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505213",
+      "name": "Bellinzona",
+      "queries": [
+        {
+          "text": "bell",
+          "style": "prefix"
+        },
+        {
+          "text": "bellizona",
+          "style": "typo"
+        },
+        {
+          "text": "BEL",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "persona": "Vevey film school student to Montreux for jazz festival",
+    "region": "Romandie",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8501200",
+      "name": "Vevey",
+      "queries": [
+        {
+          "text": "vev",
+          "style": "prefix"
+        },
+        {
+          "text": "vevy",
+          "style": "typo"
+        },
+        {
+          "text": "VV",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501300",
+      "name": "Montreux",
+      "queries": [
+        {
+          "text": "mont",
+          "style": "prefix"
+        },
+        {
+          "text": "montreaux",
+          "style": "typo"
+        },
+        {
+          "text": "MX",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "persona": "Aarau passenger flying out of Zürich Flughafen",
+    "region": "Aéroport",
+    "pattern": "Airport",
+    "from": {
+      "uic": "8502113",
+      "name": "Aarau",
+      "queries": [
+        {
+          "text": "aar",
+          "style": "prefix"
+        },
+        {
+          "text": "aaarau",
+          "style": "typo"
+        },
+        {
+          "text": "AA",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503016",
+      "name": "Zürich Flughafen",
+      "queries": [
+        {
+          "text": "zh fl",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich airport",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "flughafen",
+          "style": "prefix"
+        },
+        {
+          "text": "ZFH",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "persona": "Geneva banker hopping to Lancy office",
+    "region": "Romandie",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8501008",
+      "name": "Genève",
+      "queries": [
+        {
+          "text": "gen",
+          "style": "prefix"
+        },
+        {
+          "text": "cornavin",
+          "style": "substring"
+        },
+        {
+          "text": "GE",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8517142",
+      "name": "Lancy-Bachet",
+      "queries": [
+        {
+          "text": "lancy",
+          "style": "prefix"
+        },
+        {
+          "text": "bachet",
+          "style": "substring"
+        },
+        {
+          "text": "CABA",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "persona": "Geneva commuter switching from Léman Express to the Acacias tram",
+    "region": "Romandie",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8517142",
+      "name": "Lancy-Bachet",
+      "queries": [
+        {
+          "text": "lancy",
+          "style": "prefix"
+        },
+        {
+          "text": "bachet",
+          "style": "substring"
+        },
+        {
+          "text": "CABA",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8592774",
+      "name": "Genève, Acacias",
+      "queries": [
+        {
+          "text": "acacias",
+          "style": "substring"
+        },
+        {
+          "text": "geneve acacias",
+          "style": "substring"
+        },
+        {
+          "text": "acacia",
+          "style": "prefix"
+        }
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "persona": "Cross-border Annemasse worker arriving at Eaux-Vives",
+    "region": "Romandie",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8516273",
+      "name": "Genève-Eaux-Vives",
+      "queries": [
+        {
+          "text": "eaux",
+          "style": "prefix"
+        },
+        {
+          "text": "eaux-vives",
+          "style": "substring"
+        },
+        {
+          "text": "geneve eaux",
+          "style": "substring"
+        },
+        {
+          "text": "GEV",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501008",
+      "name": "Genève",
+      "queries": [
+        {
+          "text": "gen",
+          "style": "prefix"
+        },
+        {
+          "text": "geneva",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "GE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 24,
+    "persona": "Lake-Geneva resident in Coppet commuting to Nyon",
+    "region": "Romandie",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8501023",
+      "name": "Coppet",
+      "queries": [
+        {
+          "text": "copp",
+          "style": "prefix"
+        },
+        {
+          "text": "copet",
+          "style": "typo"
+        },
+        {
+          "text": "COP",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501030",
+      "name": "Nyon",
+      "queries": [
+        {
+          "text": "nyon",
+          "style": "prefix"
+        },
+        {
+          "text": "nyn",
+          "style": "typo"
+        },
+        {
+          "text": "NY",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 25,
+    "persona": "Morges wine seller heading to Lausanne EPFL",
+    "region": "Romandie",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8501037",
+      "name": "Morges",
+      "queries": [
+        {
+          "text": "morg",
+          "style": "prefix"
+        },
+        {
+          "text": "moges",
+          "style": "typo"
+        },
+        {
+          "text": "MOR",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501118",
+      "name": "Renens VD",
+      "queries": [
+        {
+          "text": "renen",
+          "style": "prefix"
+        },
+        {
+          "text": "renens",
+          "style": "prefix"
+        },
+        {
+          "text": "REN",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 26,
+    "persona": "Yverdon-les-Bains spa visitor returning to Lausanne",
+    "region": "Romandie",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8504200",
+      "name": "Yverdon-les-Bains",
+      "queries": [
+        {
+          "text": "yverdon",
+          "style": "prefix"
+        },
+        {
+          "text": "les bains",
+          "style": "substring"
+        },
+        {
+          "text": "YV",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {
+          "text": "laus",
+          "style": "prefix"
+        },
+        {
+          "text": "losanna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "LS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 27,
+    "persona": "Bulle gruyère farmer to Fribourg market",
+    "region": "Romandie",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8504086",
+      "name": "Bulle",
+      "queries": [
+        {
+          "text": "bull",
+          "style": "prefix"
+        },
+        {
+          "text": "buel",
+          "style": "typo"
+        },
+        {
+          "text": "BUL",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8504100",
+      "name": "Fribourg/Freiburg",
+      "queries": [
+        {
+          "text": "fri",
+          "style": "prefix"
+        },
+        {
+          "text": "fribourg",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "freiburg",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "FRI",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 28,
+    "persona": "Aigle vineyard worker to Lausanne for delivery",
+    "region": "Romandie",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8501400",
+      "name": "Aigle",
+      "queries": [
+        {
+          "text": "aig",
+          "style": "prefix"
+        },
+        {
+          "text": "aigl",
+          "style": "typo"
+        },
+        {
+          "text": "AIG",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {
+          "text": "laus",
+          "style": "prefix"
+        },
+        {
+          "text": "lausane",
+          "style": "typo"
+        },
+        {
+          "text": "LS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 29,
+    "persona": "Martigny mountaineer travelling to Brig",
+    "region": "Graubünden/Valais",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8501500",
+      "name": "Martigny",
+      "queries": [
+        {
+          "text": "martig",
+          "style": "prefix"
+        },
+        {
+          "text": "martigy",
+          "style": "typo"
+        },
+        {
+          "text": "MA",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501609",
+      "name": "Brig",
+      "queries": [
+        {
+          "text": "brig",
+          "style": "prefix"
+        },
+        {
+          "text": "brigue",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 30,
+    "persona": "Sion teacher commuting to Visp",
+    "region": "Graubünden/Valais",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8501506",
+      "name": "Sion",
+      "queries": [
+        {
+          "text": "sio",
+          "style": "prefix"
+        },
+        {
+          "text": "sitten",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "SIO",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501605",
+      "name": "Visp",
+      "queries": [
+        {
+          "text": "visp",
+          "style": "prefix"
+        },
+        {
+          "text": "vips",
+          "style": "typo"
+        },
+        {
+          "text": "VI",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 31,
+    "persona": "Bernese hiker heading to Zermatt for the Matterhorn",
+    "region": "Graubünden/Valais",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8507000",
+      "name": "Bern",
+      "queries": [
+        {
+          "text": "bern",
+          "style": "prefix"
+        },
+        {
+          "text": "berne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BN",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501689",
+      "name": "Zermatt",
+      "queries": [
+        {
+          "text": "zerm",
+          "style": "prefix"
+        },
+        {
+          "text": "zermtt",
+          "style": "typo"
+        },
+        {
+          "text": "ZERM",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 32,
+    "persona": "Tourist taking the Bernina Express to St. Moritz",
+    "region": "Graubünden/Valais",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8509000",
+      "name": "Chur",
+      "queries": [
+        {
+          "text": "chur",
+          "style": "prefix"
+        },
+        {
+          "text": "coire",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "CH",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8509253",
+      "name": "St. Moritz",
+      "queries": [
+        {
+          "text": "st m",
+          "style": "prefix"
+        },
+        {
+          "text": "st moritz",
+          "style": "substring"
+        },
+        {
+          "text": "saint moritz",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "SMOR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 33,
+    "persona": "Italian retiree on Bernina Express to Tirano",
+    "region": "International",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8509253",
+      "name": "St. Moritz",
+      "queries": [
+        {
+          "text": "moritz",
+          "style": "substring"
+        },
+        {
+          "text": "st. moritz",
+          "style": "prefix"
+        },
+        {
+          "text": "SMOR",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8509369",
+      "name": "Tirano",
+      "queries": [
+        {
+          "text": "tir",
+          "style": "prefix"
+        },
+        {
+          "text": "tirno",
+          "style": "typo"
+        },
+        {
+          "text": "TIR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 34,
+    "persona": "Scuol-Tarasp Engadine spa visitor going to Pontresina",
+    "region": "Graubünden/Valais",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8509268",
+      "name": "Scuol-Tarasp",
+      "queries": [
+        {
+          "text": "scuol",
+          "style": "prefix"
+        },
+        {
+          "text": "tarasp",
+          "style": "substring"
+        },
+        {
+          "text": "SCTA",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8509255",
+      "name": "Pontresina",
+      "queries": [
+        {
+          "text": "pontres",
+          "style": "prefix"
+        },
+        {
+          "text": "pontrsina",
+          "style": "typo"
+        },
+        {
+          "text": "PORE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 35,
+    "persona": "Davos finance executive arriving from Chur",
+    "region": "Graubünden/Valais",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8509000",
+      "name": "Chur",
+      "queries": [
+        {
+          "text": "chur",
+          "style": "prefix"
+        },
+        {
+          "text": "coire",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "CH",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8509073",
+      "name": "Davos Platz",
+      "queries": [
+        {
+          "text": "davos",
+          "style": "prefix"
+        },
+        {
+          "text": "davos pl",
+          "style": "substring"
+        },
+        {
+          "text": "DAV",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36,
+    "persona": "Skier from Davos Dorf catching connection in Klosters",
+    "region": "Graubünden/Valais",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8509072",
+      "name": "Davos Dorf",
+      "queries": [
+        {
+          "text": "davos d",
+          "style": "substring"
+        },
+        {
+          "text": "davos dorf",
+          "style": "substring"
+        },
+        {
+          "text": "DAD",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8509068",
+      "name": "Klosters Platz",
+      "queries": [
+        {
+          "text": "klost",
+          "style": "prefix"
+        },
+        {
+          "text": "klosters",
+          "style": "prefix"
+        },
+        {
+          "text": "KLO",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37,
+    "persona": "Disentis monk returning from Andermatt retreat",
+    "region": "Graubünden/Valais",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8505165",
+      "name": "Andermatt",
+      "queries": [
+        {
+          "text": "and",
+          "style": "prefix"
+        },
+        {
+          "text": "andermat",
+          "style": "typo"
+        },
+        {
+          "text": "AND",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8509179",
+      "name": "Disentis/Mustér",
+      "queries": [
+        {
+          "text": "disen",
+          "style": "prefix"
+        },
+        {
+          "text": "muster",
+          "style": "substring"
+        },
+        {
+          "text": "disentis",
+          "style": "prefix"
+        },
+        {
+          "text": "DIS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 38,
+    "persona": "Chiasso cross-border commuter heading to Milan",
+    "region": "International",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8505307",
+      "name": "Chiasso",
+      "queries": [
+        {
+          "text": "chia",
+          "style": "prefix"
+        },
+        {
+          "text": "chiaso",
+          "style": "typo"
+        },
+        {
+          "text": "CHI",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505306",
+      "name": "Balerna",
+      "queries": [
+        {
+          "text": "bal",
+          "style": "prefix"
+        },
+        {
+          "text": "blerna",
+          "style": "typo"
+        },
+        {
+          "text": "BAL",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 39,
+    "persona": "Lugano tech worker reverse-commuting to Mendrisio campus",
+    "region": "Ticino",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8505300",
+      "name": "Lugano",
+      "queries": [
+        {
+          "text": "lug",
+          "style": "prefix"
+        },
+        {
+          "text": "lugno",
+          "style": "typo"
+        },
+        {
+          "text": "LG",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8518475",
+      "name": "Mendrisio S. Martino",
+      "queries": [
+        {
+          "text": "mendrisio s",
+          "style": "substring"
+        },
+        {
+          "text": "s. martino",
+          "style": "substring"
+        },
+        {
+          "text": "san martino",
+          "style": "substring"
+        },
+        {
+          "text": "MOSM",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 40,
+    "persona": "Bellinzona court clerk attending Locarno film festival",
+    "region": "Ticino",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8505213",
+      "name": "Bellinzona",
+      "queries": [
+        {
+          "text": "bell",
+          "style": "prefix"
+        },
+        {
+          "text": "bellnzona",
+          "style": "typo"
+        },
+        {
+          "text": "BEL",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505400",
+      "name": "Locarno",
+      "queries": [
+        {
+          "text": "loc",
+          "style": "prefix"
+        },
+        {
+          "text": "locarno",
+          "style": "prefix"
+        },
+        {
+          "text": "LO",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 41,
+    "persona": "Bus-only traveller from remote Verzasca valley to Locarno",
+    "region": "Ticino",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8505771",
+      "name": "Sonogno",
+      "queries": [
+        {
+          "text": "sono",
+          "style": "prefix"
+        },
+        {
+          "text": "sonogno",
+          "style": "prefix"
+        },
+        {
+          "text": "sonognno",
+          "style": "typo"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505400",
+      "name": "Locarno",
+      "queries": [
+        {
+          "text": "loc",
+          "style": "prefix"
+        },
+        {
+          "text": "locano",
+          "style": "typo"
+        },
+        {
+          "text": "LO",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 42,
+    "persona": "Tenero camping family heading to Bellinzona market",
+    "region": "Ticino",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8505401",
+      "name": "Tenero",
+      "queries": [
+        {
+          "text": "ten",
+          "style": "prefix"
+        },
+        {
+          "text": "tenro",
+          "style": "typo"
+        },
+        {
+          "text": "TEN",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505213",
+      "name": "Bellinzona",
+      "queries": [
+        {
+          "text": "bell",
+          "style": "prefix"
+        },
+        {
+          "text": "bellinz",
+          "style": "prefix"
+        },
+        {
+          "text": "BEL",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 43,
+    "persona": "Airolo skier going to Faido for groceries",
+    "region": "Ticino",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8505201",
+      "name": "Airolo",
+      "queries": [
+        {
+          "text": "airolo",
+          "style": "prefix"
+        },
+        {
+          "text": "airlo",
+          "style": "typo"
+        },
+        {
+          "text": "AI",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505204",
+      "name": "Faido",
+      "queries": [
+        {
+          "text": "fai",
+          "style": "prefix"
+        },
+        {
+          "text": "faid",
+          "style": "prefix"
+        },
+        {
+          "text": "FA",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 44,
+    "persona": "Italian-speaking student in Capolago commuting to Lugano",
+    "region": "Ticino",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8505304",
+      "name": "Capolago-Riva S. Vitale",
+      "queries": [
+        {
+          "text": "capo",
+          "style": "prefix"
+        },
+        {
+          "text": "capolago",
+          "style": "prefix"
+        },
+        {
+          "text": "riva",
+          "style": "substring"
+        },
+        {
+          "text": "CAP",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505300",
+      "name": "Lugano",
+      "queries": [
+        {
+          "text": "lug",
+          "style": "prefix"
+        },
+        {
+          "text": "lugano",
+          "style": "prefix"
+        },
+        {
+          "text": "LG",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 45,
+    "persona": "Schaffhausen tourist riding the Rhine to Stein am Rhein",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8503424",
+      "name": "Schaffhausen",
+      "queries": [
+        {
+          "text": "schaff",
+          "style": "prefix"
+        },
+        {
+          "text": "schafhausen",
+          "style": "typo"
+        },
+        {
+          "text": "SH",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8506139",
+      "name": "Stein am Rhein",
+      "queries": [
+        {
+          "text": "stein",
+          "style": "prefix"
+        },
+        {
+          "text": "stein am rhein",
+          "style": "substring"
+        },
+        {
+          "text": "STR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 46,
+    "persona": "Rapperswil rose festival visitor coming from Zurich",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8503000",
+      "name": "Zürich HB",
+      "queries": [
+        {
+          "text": "zh",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "ZUE",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503110",
+      "name": "Rapperswil SG",
+      "queries": [
+        {
+          "text": "rapper",
+          "style": "prefix"
+        },
+        {
+          "text": "rapperswil",
+          "style": "prefix"
+        },
+        {
+          "text": "RW",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 47,
+    "persona": "Uster S-Bahn commuter to Zurich Stadelhofen",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8503125",
+      "name": "Uster",
+      "queries": [
+        {
+          "text": "ust",
+          "style": "prefix"
+        },
+        {
+          "text": "uster",
+          "style": "prefix"
+        },
+        {
+          "text": "uter",
+          "style": "typo"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503003",
+      "name": "Zürich Stadelhofen",
+      "queries": [
+        {
+          "text": "stadel",
+          "style": "substring"
+        },
+        {
+          "text": "stadelhofen",
+          "style": "substring"
+        },
+        {
+          "text": "zurich stadel",
+          "style": "substring"
+        },
+        {
+          "text": "ZSTH",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 48,
+    "persona": "Zurich Oerlikon resident heading to Flughafen",
+    "region": "Aéroport",
+    "pattern": "Airport",
+    "from": {
+      "uic": "8503006",
+      "name": "Zürich Oerlikon",
+      "queries": [
+        {
+          "text": "oerlikon",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich oerlikon",
+          "style": "substring"
+        },
+        {
+          "text": "ZOER",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503016",
+      "name": "Zürich Flughafen",
+      "queries": [
+        {
+          "text": "flug",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich airport",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "ZFH",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 49,
+    "persona": "Lausanne medic flying to Asia via Zurich Airport",
+    "region": "Aéroport",
+    "pattern": "Airport",
+    "from": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {
+          "text": "lau",
+          "style": "prefix"
+        },
+        {
+          "text": "losanna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "LS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503016",
+      "name": "Zürich Flughafen",
+      "queries": [
+        {
+          "text": "zh flugh",
+          "style": "prefix"
+        },
+        {
+          "text": "zurich airport",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "ZFH",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 50,
+    "persona": "Basel commuter to Basel EuroAirport via bus",
+    "region": "Aéroport",
+    "pattern": "Airport",
+    "from": {
+      "uic": "8500010",
+      "name": "Basel SBB",
+      "queries": [
+        {
+          "text": "basel",
+          "style": "prefix"
+        },
+        {
+          "text": "bâle",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "1401704",
+      "name": "Basel EuroAirport, Ankunft",
+      "queries": [
+        {
+          "text": "euroairport",
+          "style": "substring"
+        },
+        {
+          "text": "basel euro",
+          "style": "substring"
+        },
+        {
+          "text": "bsl airport",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "BYAP",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 51,
+    "persona": "Pratteln logistics worker commuting to Basel SBB",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8500021",
+      "name": "Pratteln",
+      "queries": [
+        {
+          "text": "prat",
+          "style": "prefix"
+        },
+        {
+          "text": "pratteln",
+          "style": "prefix"
+        },
+        {
+          "text": "PR",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8500010",
+      "name": "Basel SBB",
+      "queries": [
+        {
+          "text": "basel",
+          "style": "prefix"
+        },
+        {
+          "text": "bâle",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "basilea",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "BS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 52,
+    "persona": "Liestal cantonal employee commuting to Basel",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8500023",
+      "name": "Liestal",
+      "queries": [
+        {
+          "text": "liest",
+          "style": "prefix"
+        },
+        {
+          "text": "listal",
+          "style": "typo"
+        },
+        {
+          "text": "LST",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8500010",
+      "name": "Basel SBB",
+      "queries": [
+        {
+          "text": "bas",
+          "style": "prefix"
+        },
+        {
+          "text": "bâle",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 53,
+    "persona": "Sissach winemaker heading to Olten",
+    "region": "Mittelland",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8500026",
+      "name": "Sissach",
+      "queries": [
+        {
+          "text": "siss",
+          "style": "prefix"
+        },
+        {
+          "text": "ssach",
+          "style": "typo"
+        },
+        {
+          "text": "SIS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8500218",
+      "name": "Olten",
+      "queries": [
+        {
+          "text": "olt",
+          "style": "prefix"
+        },
+        {
+          "text": "olten",
+          "style": "prefix"
+        },
+        {
+          "text": "OL",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 54,
+    "persona": "Solothurn cathedral docent visiting Bern museum",
+    "region": "Mittelland",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8500207",
+      "name": "Solothurn",
+      "queries": [
+        {
+          "text": "solo",
+          "style": "prefix"
+        },
+        {
+          "text": "soluthurn",
+          "style": "typo"
+        },
+        {
+          "text": "SO",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507000",
+      "name": "Bern",
+      "queries": [
+        {
+          "text": "bern",
+          "style": "prefix"
+        },
+        {
+          "text": "berne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BN",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 55,
+    "persona": "Lenzburg castle guide arriving from Aarau",
+    "region": "Mittelland",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8502119",
+      "name": "Lenzburg",
+      "queries": [
+        {
+          "text": "lenz",
+          "style": "prefix"
+        },
+        {
+          "text": "lenzbrg",
+          "style": "typo"
+        },
+        {
+          "text": "LB",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8502113",
+      "name": "Aarau",
+      "queries": [
+        {
+          "text": "aar",
+          "style": "prefix"
+        },
+        {
+          "text": "arau",
+          "style": "typo"
+        },
+        {
+          "text": "AA",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 56,
+    "persona": "Brugg AG technician commuting to Baden",
+    "region": "Mittelland",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8500309",
+      "name": "Brugg AG",
+      "queries": [
+        {
+          "text": "brugg",
+          "style": "prefix"
+        },
+        {
+          "text": "brug",
+          "style": "typo"
+        },
+        {
+          "text": "BG",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8503504",
+      "name": "Baden",
+      "queries": [
+        {
+          "text": "bad",
+          "style": "prefix"
+        },
+        {
+          "text": "baden",
+          "style": "prefix"
+        },
+        {
+          "text": "BD",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 57,
+    "persona": "Frauenfeld apprentice commuting to Winterthur",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8506100",
+      "name": "Frauenfeld",
+      "queries": [
+        {
+          "text": "frau",
+          "style": "prefix"
+        },
+        {
+          "text": "frauenfled",
+          "style": "typo"
+        },
+        {
+          "text": "FF",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8506000",
+      "name": "Winterthur",
+      "queries": [
+        {
+          "text": "wint",
+          "style": "prefix"
+        },
+        {
+          "text": "winterthur",
+          "style": "prefix"
+        },
+        {
+          "text": "W",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 58,
+    "persona": "Wil SG hospital worker travelling to St. Gallen",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8506206",
+      "name": "Wil SG",
+      "queries": [
+        {
+          "text": "wil",
+          "style": "prefix"
+        },
+        {
+          "text": "wil sg",
+          "style": "substring"
+        },
+        {
+          "text": "WIL",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8506302",
+      "name": "St. Gallen",
+      "queries": [
+        {
+          "text": "st g",
+          "style": "prefix"
+        },
+        {
+          "text": "st gallen",
+          "style": "substring"
+        },
+        {
+          "text": "st-gall",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "SG",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 59,
+    "persona": "Sargans S-Bahn rider to Chur",
+    "region": "Graubünden/Valais",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8509411",
+      "name": "Sargans",
+      "queries": [
+        {
+          "text": "sarg",
+          "style": "prefix"
+        },
+        {
+          "text": "sargns",
+          "style": "typo"
+        },
+        {
+          "text": "SA",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8509000",
+      "name": "Chur",
+      "queries": [
+        {
+          "text": "chur",
+          "style": "prefix"
+        },
+        {
+          "text": "coire",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "CH",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 60,
+    "persona": "Buchs SG cross-border traveller to Liechtenstein region",
+    "region": "International",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8509404",
+      "name": "Buchs SG",
+      "queries": [
+        {
+          "text": "buchs",
+          "style": "prefix"
+        },
+        {
+          "text": "buchs sg",
+          "style": "substring"
+        },
+        {
+          "text": "BU",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8509406",
+      "name": "Sevelen",
+      "queries": [
+        {
+          "text": "sev",
+          "style": "prefix"
+        },
+        {
+          "text": "sevlen",
+          "style": "typo"
+        },
+        {
+          "text": "SEV",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 61,
+    "persona": "Arth-Goldau gateway traveller to Lugano",
+    "region": "Ticino",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8505004",
+      "name": "Arth-Goldau",
+      "queries": [
+        {
+          "text": "arth",
+          "style": "prefix"
+        },
+        {
+          "text": "goldau",
+          "style": "substring"
+        },
+        {
+          "text": "arth goldau",
+          "style": "substring"
+        },
+        {
+          "text": "GD",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505300",
+      "name": "Lugano",
+      "queries": [
+        {
+          "text": "lug",
+          "style": "prefix"
+        },
+        {
+          "text": "lugano",
+          "style": "prefix"
+        },
+        {
+          "text": "LG",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 62,
+    "persona": "Brunnen lake-tourist heading to Flüelen",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8505007",
+      "name": "Brunnen",
+      "queries": [
+        {
+          "text": "brun",
+          "style": "prefix"
+        },
+        {
+          "text": "brunen",
+          "style": "typo"
+        },
+        {
+          "text": "BRU",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505112",
+      "name": "Flüelen",
+      "queries": [
+        {
+          "text": "flue",
+          "style": "prefix"
+        },
+        {
+          "text": "fluelen",
+          "style": "typo"
+        },
+        {
+          "text": "FL",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 63,
+    "persona": "Erstfeld railwayman commuting to Göschenen",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8505114",
+      "name": "Erstfeld",
+      "queries": [
+        {
+          "text": "erst",
+          "style": "prefix"
+        },
+        {
+          "text": "erstfled",
+          "style": "typo"
+        },
+        {
+          "text": "ER",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505119",
+      "name": "Göschenen",
+      "queries": [
+        {
+          "text": "gosch",
+          "style": "prefix"
+        },
+        {
+          "text": "göschenen",
+          "style": "prefix"
+        },
+        {
+          "text": "GOE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 64,
+    "persona": "Tourist trying to spell Lauterbrunnen wrong",
+    "region": "Suisse alémanique",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8507492",
+      "name": "Interlaken Ost",
+      "queries": [
+        {
+          "text": "interl",
+          "style": "prefix"
+        },
+        {
+          "text": "interlaken o",
+          "style": "substring"
+        },
+        {
+          "text": "IO",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507384",
+      "name": "Lauterbrunnen",
+      "queries": [
+        {
+          "text": "lauter",
+          "style": "prefix"
+        },
+        {
+          "text": "lauterbrun",
+          "style": "prefix"
+        },
+        {
+          "text": "LAUT",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 65,
+    "persona": "Tourist riding from Lauterbrunnen up to Wengen",
+    "region": "Suisse alémanique",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8507384",
+      "name": "Lauterbrunnen",
+      "queries": [
+        {
+          "text": "lauter",
+          "style": "prefix"
+        },
+        {
+          "text": "lauterbrunen",
+          "style": "typo"
+        },
+        {
+          "text": "LAUT",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507372",
+      "name": "Wengen",
+      "queries": [
+        {
+          "text": "weng",
+          "style": "prefix"
+        },
+        {
+          "text": "wengn",
+          "style": "typo"
+        },
+        {
+          "text": "WENG",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 66,
+    "persona": "Grindelwald hotelier expecting guests from Interlaken",
+    "region": "Suisse alémanique",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8507492",
+      "name": "Interlaken Ost",
+      "queries": [
+        {
+          "text": "interlaken",
+          "style": "prefix"
+        },
+        {
+          "text": "interlaken ost",
+          "style": "substring"
+        },
+        {
+          "text": "IO",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507380",
+      "name": "Grindelwald",
+      "queries": [
+        {
+          "text": "grind",
+          "style": "prefix"
+        },
+        {
+          "text": "grindelwlad",
+          "style": "typo"
+        },
+        {
+          "text": "GRIN",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 67,
+    "persona": "Adventure tourist taking the Jungfraujoch trip",
+    "region": "Suisse alémanique",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8507374",
+      "name": "Kleine Scheidegg",
+      "queries": [
+        {
+          "text": "kleine",
+          "style": "prefix"
+        },
+        {
+          "text": "scheidegg",
+          "style": "substring"
+        },
+        {
+          "text": "kleine scheidegg",
+          "style": "substring"
+        },
+        {
+          "text": "KLS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507364",
+      "name": "Jungfraujoch",
+      "queries": [
+        {
+          "text": "jung",
+          "style": "prefix"
+        },
+        {
+          "text": "jungfrau",
+          "style": "prefix"
+        },
+        {
+          "text": "JU",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 68,
+    "persona": "Kandersteg climber going to Spiez",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8507475",
+      "name": "Kandersteg",
+      "queries": [
+        {
+          "text": "kand",
+          "style": "prefix"
+        },
+        {
+          "text": "kanderstg",
+          "style": "typo"
+        },
+        {
+          "text": "KA",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507483",
+      "name": "Spiez",
+      "queries": [
+        {
+          "text": "spi",
+          "style": "prefix"
+        },
+        {
+          "text": "spiz",
+          "style": "typo"
+        },
+        {
+          "text": "SP",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 69,
+    "persona": "Gstaad chalet guest arriving from Montreux via GoldenPass",
+    "region": "Romandie",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8501300",
+      "name": "Montreux",
+      "queries": [
+        {
+          "text": "mont",
+          "style": "prefix"
+        },
+        {
+          "text": "montreux",
+          "style": "prefix"
+        },
+        {
+          "text": "MX",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501399",
+      "name": "Gstaad",
+      "queries": [
+        {
+          "text": "gst",
+          "style": "prefix"
+        },
+        {
+          "text": "gstadd",
+          "style": "typo"
+        },
+        {
+          "text": "GST",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 70,
+    "persona": "Zweisimmen GoldenPass rail fan to Lenk im Simmental",
+    "region": "Romandie",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8507290",
+      "name": "Zweisimmen",
+      "queries": [
+        {
+          "text": "zwei",
+          "style": "prefix"
+        },
+        {
+          "text": "zweisimen",
+          "style": "typo"
+        },
+        {
+          "text": "ZW",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507279",
+      "name": "Lenk im Simmental",
+      "queries": [
+        {
+          "text": "lenk",
+          "style": "prefix"
+        },
+        {
+          "text": "lenk im",
+          "style": "substring"
+        },
+        {
+          "text": "simmental",
+          "style": "substring"
+        },
+        {
+          "text": "LENK",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 71,
+    "persona": "Engelberg ski tourist arriving from Luzern",
+    "region": "Suisse alémanique",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8505000",
+      "name": "Luzern",
+      "queries": [
+        {
+          "text": "luz",
+          "style": "prefix"
+        },
+        {
+          "text": "lucerne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "LZ",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8508399",
+      "name": "Engelberg",
+      "queries": [
+        {
+          "text": "engel",
+          "style": "prefix"
+        },
+        {
+          "text": "engelbrg",
+          "style": "typo"
+        },
+        {
+          "text": "EBG",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 72,
+    "persona": "Stans Pilatus-area resident heading to Luzern for shopping",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8508391",
+      "name": "Stans",
+      "queries": [
+        {
+          "text": "stans",
+          "style": "prefix"
+        },
+        {
+          "text": "satns",
+          "style": "typo"
+        },
+        {
+          "text": "STAN",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505000",
+      "name": "Luzern",
+      "queries": [
+        {
+          "text": "luzern",
+          "style": "prefix"
+        },
+        {
+          "text": "lucerne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "lucerna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "LZ",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 73,
+    "persona": "Sarnen Obwalden government employee to Luzern",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8508314",
+      "name": "Sarnen",
+      "queries": [
+        {
+          "text": "sarn",
+          "style": "prefix"
+        },
+        {
+          "text": "sarnen",
+          "style": "prefix"
+        },
+        {
+          "text": "SAR",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505000",
+      "name": "Luzern",
+      "queries": [
+        {
+          "text": "luz",
+          "style": "prefix"
+        },
+        {
+          "text": "lucerne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "LZ",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 74,
+    "persona": "Thun lakeside resident commuting to Bern",
+    "region": "Mittelland",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8507100",
+      "name": "Thun",
+      "queries": [
+        {
+          "text": "thun",
+          "style": "prefix"
+        },
+        {
+          "text": "thn",
+          "style": "typo"
+        },
+        {
+          "text": "TH",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507000",
+      "name": "Bern",
+      "queries": [
+        {
+          "text": "bern",
+          "style": "prefix"
+        },
+        {
+          "text": "berne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BN",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 75,
+    "persona": "Burgdorf brewery worker shipping to Bern",
+    "region": "Mittelland",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8508005",
+      "name": "Burgdorf",
+      "queries": [
+        {
+          "text": "burg",
+          "style": "prefix"
+        },
+        {
+          "text": "burgdrf",
+          "style": "typo"
+        },
+        {
+          "text": "BDF",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507000",
+      "name": "Bern",
+      "queries": [
+        {
+          "text": "bern",
+          "style": "prefix"
+        },
+        {
+          "text": "berne",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BN",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 76,
+    "persona": "Langenthal industrial worker heading to Olten",
+    "region": "Mittelland",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8508100",
+      "name": "Langenthal",
+      "queries": [
+        {
+          "text": "lang",
+          "style": "prefix"
+        },
+        {
+          "text": "langenthal",
+          "style": "prefix"
+        },
+        {
+          "text": "LTH",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8500218",
+      "name": "Olten",
+      "queries": [
+        {
+          "text": "olt",
+          "style": "prefix"
+        },
+        {
+          "text": "otlen",
+          "style": "typo"
+        },
+        {
+          "text": "OL",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 77,
+    "persona": "Romont Glâne resident to Lausanne for studies",
+    "region": "Romandie",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8504023",
+      "name": "Romont FR",
+      "queries": [
+        {
+          "text": "rom",
+          "style": "prefix"
+        },
+        {
+          "text": "romont",
+          "style": "prefix"
+        },
+        {
+          "text": "ROM",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {
+          "text": "laus",
+          "style": "prefix"
+        },
+        {
+          "text": "losanna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "LS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 78,
+    "persona": "Palézieux junction traveller heading to Bulle",
+    "region": "Romandie",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8504014",
+      "name": "Palézieux",
+      "queries": [
+        {
+          "text": "palez",
+          "style": "prefix"
+        },
+        {
+          "text": "palezieux",
+          "style": "typo"
+        },
+        {
+          "text": "PAL",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8504086",
+      "name": "Bulle",
+      "queries": [
+        {
+          "text": "bulle",
+          "style": "prefix"
+        },
+        {
+          "text": "bull",
+          "style": "prefix"
+        },
+        {
+          "text": "BUL",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 79,
+    "persona": "Lavaux winemaker connecting from Cully to the Lausanne M2 metro",
+    "region": "Romandie",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8501124",
+      "name": "Cully",
+      "queries": [
+        {
+          "text": "cully",
+          "style": "prefix"
+        },
+        {
+          "text": "culy",
+          "style": "typo"
+        },
+        {
+          "text": "CU",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501208",
+      "name": "Lausanne, Provence",
+      "queries": [
+        {
+          "text": "lausanne provence",
+          "style": "substring"
+        },
+        {
+          "text": "provence",
+          "style": "substring"
+        },
+        {
+          "text": "lausanne m2",
+          "style": "substring"
+        },
+        {
+          "text": "PROV",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 80,
+    "persona": "Hiker exploring Lavaux from St-Saphorin to Vevey",
+    "region": "Romandie",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8501127",
+      "name": "St-Saphorin",
+      "queries": [
+        {
+          "text": "st sap",
+          "style": "prefix"
+        },
+        {
+          "text": "saphorin",
+          "style": "substring"
+        },
+        {
+          "text": "saint saphorin",
+          "style": "substring"
+        },
+        {
+          "text": "STSA",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501200",
+      "name": "Vevey",
+      "queries": [
+        {
+          "text": "vev",
+          "style": "prefix"
+        },
+        {
+          "text": "vevey",
+          "style": "prefix"
+        },
+        {
+          "text": "VV",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 81,
+    "persona": "Monthey festival-goer heading to St-Maurice",
+    "region": "Romandie",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8501421",
+      "name": "Monthey",
+      "queries": [
+        {
+          "text": "mont",
+          "style": "prefix"
+        },
+        {
+          "text": "monhey",
+          "style": "typo"
+        },
+        {
+          "text": "MTH",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501403",
+      "name": "St-Maurice",
+      "queries": [
+        {
+          "text": "st maur",
+          "style": "prefix"
+        },
+        {
+          "text": "st-maurice",
+          "style": "substring"
+        },
+        {
+          "text": "saint maurice",
+          "style": "substring"
+        },
+        {
+          "text": "SM",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 82,
+    "persona": "Sierre wine resident commuting to Sion",
+    "region": "Graubünden/Valais",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8501509",
+      "name": "Sierre/Siders",
+      "queries": [
+        {
+          "text": "sierre",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "siders",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "sierre siders",
+          "style": "substring"
+        },
+        {
+          "text": "SIE",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501506",
+      "name": "Sion",
+      "queries": [
+        {
+          "text": "sion",
+          "style": "prefix"
+        },
+        {
+          "text": "sitten",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "SIO",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 83,
+    "persona": "Leuk thermal-bath visitor coming from Brig",
+    "region": "Graubünden/Valais",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8501609",
+      "name": "Brig",
+      "queries": [
+        {
+          "text": "brig",
+          "style": "prefix"
+        },
+        {
+          "text": "brigue",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BR",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501601",
+      "name": "Leuk",
+      "queries": [
+        {
+          "text": "leuk",
+          "style": "prefix"
+        },
+        {
+          "text": "leuc",
+          "style": "typo"
+        },
+        {
+          "text": "LK",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 84,
+    "persona": "Saas-Fee skier arriving by PostBus from Stalden-Saas",
+    "region": "Graubünden/Valais",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8501683",
+      "name": "Stalden-Saas",
+      "queries": [
+        {
+          "text": "stalden",
+          "style": "prefix"
+        },
+        {
+          "text": "stalden saas",
+          "style": "substring"
+        },
+        {
+          "text": "STAS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501782",
+      "name": "Saas-Fee, Busterminal",
+      "queries": [
+        {
+          "text": "saas fee",
+          "style": "substring"
+        },
+        {
+          "text": "saas-fee",
+          "style": "substring"
+        },
+        {
+          "text": "SFE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 85,
+    "persona": "Adelboden ski-school instructor returning to Frutigen",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8507851",
+      "name": "Adelboden, Post",
+      "queries": [
+        {
+          "text": "adelboden",
+          "style": "prefix"
+        },
+        {
+          "text": "adelboden post",
+          "style": "substring"
+        },
+        {
+          "text": "ADE",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507478",
+      "name": "Frutigen",
+      "queries": [
+        {
+          "text": "fruti",
+          "style": "prefix"
+        },
+        {
+          "text": "frutigen",
+          "style": "prefix"
+        },
+        {
+          "text": "FR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 86,
+    "persona": "Mürren BLM mountain-railway tourist from Lauterbrunnen",
+    "region": "Suisse alémanique",
+    "pattern": "Touristic",
+    "from": {
+      "uic": "8507384",
+      "name": "Lauterbrunnen",
+      "queries": [
+        {
+          "text": "lauter",
+          "style": "prefix"
+        },
+        {
+          "text": "lauterbrunnen",
+          "style": "prefix"
+        },
+        {
+          "text": "LAUT",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8507379",
+      "name": "Mürren BLM",
+      "queries": [
+        {
+          "text": "mürren",
+          "style": "prefix"
+        },
+        {
+          "text": "mürren blm",
+          "style": "substring"
+        },
+        {
+          "text": "MUER",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 87,
+    "persona": "Konolfingen Emmental commuter to Bern's Weissenbühl tram",
+    "region": "Mittelland",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8508202",
+      "name": "Konolfingen",
+      "queries": [
+        {
+          "text": "konolf",
+          "style": "prefix"
+        },
+        {
+          "text": "konolfingn",
+          "style": "typo"
+        },
+        {
+          "text": "KF",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8595142",
+      "name": "Bern, Weissenbühl (Tram)",
+      "queries": [
+        {
+          "text": "weiss",
+          "style": "prefix"
+        },
+        {
+          "text": "weissenbühl",
+          "style": "substring"
+        },
+        {
+          "text": "bern weissen",
+          "style": "substring"
+        }
+      ]
+    }
+  },
+  {
+    "id": 88,
+    "persona": "Schwarzenburg resident arriving at Bern Bahnhof bus terminal",
+    "region": "Mittelland",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8507089",
+      "name": "Schwarzenburg",
+      "queries": [
+        {
+          "text": "schwarz",
+          "style": "prefix"
+        },
+        {
+          "text": "schwarznburg",
+          "style": "typo"
+        },
+        {
+          "text": "SCBG",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8576646",
+      "name": "Bern, Bahnhof",
+      "queries": [
+        {
+          "text": "bern bahn",
+          "style": "substring"
+        },
+        {
+          "text": "bern, bahnhof",
+          "style": "substring"
+        },
+        {
+          "text": "bern bf",
+          "style": "substring"
+        }
+      ]
+    }
+  },
+  {
+    "id": 89,
+    "persona": "Murten/Morat lake walker to Fribourg",
+    "region": "Mittelland",
+    "pattern": "Village-Hub",
+    "from": {
+      "uic": "8504128",
+      "name": "Murten/Morat",
+      "queries": [
+        {
+          "text": "murten",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "morat",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "murten morat",
+          "style": "substring"
+        },
+        {
+          "text": "MRT",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8504100",
+      "name": "Fribourg/Freiburg",
+      "queries": [
+        {
+          "text": "fribourg",
+          "style": "prefix"
+        },
+        {
+          "text": "freiburg",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "FRI",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 90,
+    "persona": "La Chaux-de-Fonds watchmaker travelling to Neuchâtel",
+    "region": "Romandie",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8504314",
+      "name": "La Chaux-de-Fonds",
+      "queries": [
+        {
+          "text": "chaux",
+          "style": "prefix"
+        },
+        {
+          "text": "chaux de fonds",
+          "style": "substring"
+        },
+        {
+          "text": "la chaux",
+          "style": "substring"
+        },
+        {
+          "text": "CF",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8504221",
+      "name": "Neuchâtel",
+      "queries": [
+        {
+          "text": "neuc",
+          "style": "prefix"
+        },
+        {
+          "text": "neuenburg",
+          "style": "cross-language",
+          "language": "DE"
+        },
+        {
+          "text": "NE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 91,
+    "persona": "Delémont Jura cantonal traveller crossing to Porrentruy",
+    "region": "Mittelland",
+    "pattern": "Hub-Hub",
+    "from": {
+      "uic": "8500109",
+      "name": "Delémont",
+      "queries": [
+        {
+          "text": "del",
+          "style": "prefix"
+        },
+        {
+          "text": "delemont",
+          "style": "typo"
+        },
+        {
+          "text": "DMT",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8500126",
+      "name": "Porrentruy",
+      "queries": [
+        {
+          "text": "porr",
+          "style": "prefix"
+        },
+        {
+          "text": "porentruy",
+          "style": "typo"
+        },
+        {
+          "text": "POR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 92,
+    "persona": "Boncourt cross-border worker heading toward France",
+    "region": "International",
+    "pattern": "International",
+    "from": {
+      "uic": "8500128",
+      "name": "Boncourt",
+      "queries": [
+        {
+          "text": "bon",
+          "style": "prefix"
+        },
+        {
+          "text": "boncourt",
+          "style": "prefix"
+        },
+        {
+          "text": "BCT",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8500126",
+      "name": "Porrentruy",
+      "queries": [
+        {
+          "text": "porr",
+          "style": "prefix"
+        },
+        {
+          "text": "porrentry",
+          "style": "typo"
+        },
+        {
+          "text": "POR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 93,
+    "persona": "Vallorbe TGV-Lyria passenger from Lausanne",
+    "region": "International",
+    "pattern": "International",
+    "from": {
+      "uic": "8501120",
+      "name": "Lausanne",
+      "queries": [
+        {
+          "text": "lau",
+          "style": "prefix"
+        },
+        {
+          "text": "losanna",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "LS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501103",
+      "name": "Vallorbe",
+      "queries": [
+        {
+          "text": "vall",
+          "style": "prefix"
+        },
+        {
+          "text": "vallorbe",
+          "style": "prefix"
+        },
+        {
+          "text": "VAL",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 94,
+    "persona": "La Plaine cross-border resident heading to Genève",
+    "region": "International",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8501001",
+      "name": "La Plaine",
+      "queries": [
+        {
+          "text": "la pl",
+          "style": "prefix"
+        },
+        {
+          "text": "plaine",
+          "style": "substring"
+        },
+        {
+          "text": "la plaine",
+          "style": "substring"
+        },
+        {
+          "text": "LP",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501008",
+      "name": "Genève",
+      "queries": [
+        {
+          "text": "gen",
+          "style": "prefix"
+        },
+        {
+          "text": "geneva",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "GE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 95,
+    "persona": "Kreuzlingen Bodensee resident crossing to Constance bus",
+    "region": "International",
+    "pattern": "International",
+    "from": {
+      "uic": "8506131",
+      "name": "Kreuzlingen",
+      "queries": [
+        {
+          "text": "kreuz",
+          "style": "prefix"
+        },
+        {
+          "text": "kreuzlingn",
+          "style": "typo"
+        },
+        {
+          "text": "KR",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "1101535",
+      "name": "Konstanz, Bahnhof",
+      "queries": [
+        {
+          "text": "konstanz",
+          "style": "prefix"
+        },
+        {
+          "text": "constance",
+          "style": "cross-language",
+          "language": "EN"
+        },
+        {
+          "text": "constanza",
+          "style": "cross-language",
+          "language": "IT"
+        },
+        {
+          "text": "konstanz bf",
+          "style": "substring"
+        }
+      ]
+    }
+  },
+  {
+    "id": 96,
+    "persona": "Iselle Italian border worker heading into Brig",
+    "region": "International",
+    "pattern": "International",
+    "from": {
+      "uic": "8501952",
+      "name": "Iselle di Trasquera",
+      "queries": [
+        {
+          "text": "iselle",
+          "style": "prefix"
+        },
+        {
+          "text": "iselle di",
+          "style": "substring"
+        },
+        {
+          "text": "iselle trasquera",
+          "style": "substring"
+        },
+        {
+          "text": "IS",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8501609",
+      "name": "Brig",
+      "queries": [
+        {
+          "text": "brig",
+          "style": "prefix"
+        },
+        {
+          "text": "brigue",
+          "style": "cross-language",
+          "language": "FR"
+        },
+        {
+          "text": "BR",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 97,
+    "persona": "Pino-Tronzano cross-border traveller riding into Locarno",
+    "region": "International",
+    "pattern": "International",
+    "from": {
+      "uic": "8505862",
+      "name": "Pino-Tronzano",
+      "queries": [
+        {
+          "text": "pino",
+          "style": "prefix"
+        },
+        {
+          "text": "pino tronzano",
+          "style": "substring"
+        },
+        {
+          "text": "tronzano",
+          "style": "substring"
+        },
+        {
+          "text": "PINT",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8505400",
+      "name": "Locarno",
+      "queries": [
+        {
+          "text": "loc",
+          "style": "prefix"
+        },
+        {
+          "text": "locrno",
+          "style": "typo"
+        },
+        {
+          "text": "LO",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 98,
+    "persona": "Annemasse cross-border French commuter to Genève",
+    "region": "International",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "1400338",
+      "name": "Annemasse, Gare routière",
+      "queries": [
+        {
+          "text": "annemasse",
+          "style": "prefix"
+        },
+        {
+          "text": "annmasse",
+          "style": "typo"
+        },
+        {
+          "text": "annemasse gare",
+          "style": "substring"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8516273",
+      "name": "Genève-Eaux-Vives",
+      "queries": [
+        {
+          "text": "eaux",
+          "style": "prefix"
+        },
+        {
+          "text": "eaux-vives",
+          "style": "substring"
+        },
+        {
+          "text": "geneve eaux vives",
+          "style": "substring"
+        },
+        {
+          "text": "GEV",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 99,
+    "persona": "Heiden Appenzellerland tram-funicular tourist returning to Rorschach",
+    "region": "Suisse alémanique",
+    "pattern": "Hub-Spoke",
+    "from": {
+      "uic": "8506355",
+      "name": "Heiden",
+      "queries": [
+        {
+          "text": "heid",
+          "style": "prefix"
+        },
+        {
+          "text": "heidn",
+          "style": "typo"
+        },
+        {
+          "text": "HEI",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8506311",
+      "name": "Rorschach",
+      "queries": [
+        {
+          "text": "ror",
+          "style": "prefix"
+        },
+        {
+          "text": "rorschach",
+          "style": "prefix"
+        },
+        {
+          "text": "RS",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  },
+  {
+    "id": 100,
+    "persona": "Appenzell folklore traveller riding to Herisau",
+    "region": "Suisse alémanique",
+    "pattern": "Village-Village",
+    "from": {
+      "uic": "8506286",
+      "name": "Appenzell",
+      "queries": [
+        {
+          "text": "appen",
+          "style": "prefix"
+        },
+        {
+          "text": "appenzll",
+          "style": "typo"
+        },
+        {
+          "text": "APPZ",
+          "style": "abbreviation"
+        }
+      ]
+    },
+    "to": {
+      "uic": "8506290",
+      "name": "Herisau",
+      "queries": [
+        {
+          "text": "heri",
+          "style": "prefix"
+        },
+        {
+          "text": "herisau",
+          "style": "prefix"
+        },
+        {
+          "text": "HE",
+          "style": "abbreviation"
+        }
+      ]
+    }
+  }
+]

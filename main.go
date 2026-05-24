@@ -12,6 +12,7 @@ import (
 
 	"github.com/necrom4/sbb-tui/config"
 	"github.com/necrom4/sbb-tui/ui"
+	"github.com/necrom4/sbb-tui/ui/querycache"
 )
 
 // version is set at build time via -ldflags.
@@ -25,6 +26,8 @@ func main() {
 	arrival := flag.Bool("arrival", false, "Set date/time as arrival instead of departure time")
 	flag.Bool("animations", true, "Play UI animations")
 	flag.Bool("nerdfont", true, "Use Nerd Font icons")
+	flag.Bool("fuzzy", true, "Use local fuzzy station picker (spike)")
+	clearCache := flag.Bool("clear-cache", false, "Delete the on-disk API query cache before starting (dev convenience)")
 	showVersion := flag.BoolP("version", "v", false, "Print version and exit")
 
 	flag.Usage = func() {
@@ -78,11 +81,22 @@ func main() {
 		nf, _ := flag.CommandLine.GetBool("nerdfont")
 		cfg.NerdFont = nf
 	}
+	cfg.Fuzzy, _ = flag.CommandLine.GetBool("fuzzy")
+
+	if *clearCache {
+		if path, err := querycache.DefaultPath(); err == nil {
+			_ = os.Remove(path)
+		}
+	}
 
 	m := ui.NewModel(cfg)
 
-	if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
+	finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run()
+	if err != nil {
 		fmt.Println("fatal:", err)
 		os.Exit(1)
+	}
+	if c, ok := finalModel.(interface{ Close() }); ok {
+		c.Close()
 	}
 }

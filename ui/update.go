@@ -13,6 +13,7 @@ import (
 
 	"github.com/necrom4/sbb-tui/api"
 	"github.com/necrom4/sbb-tui/model"
+	"github.com/necrom4/sbb-tui/ui/querycache"
 )
 
 // Update implements tea.Model.
@@ -28,7 +29,25 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc":
+		case "ctrl+c":
+			return m, tea.Quit
+		case "esc":
+			// First press cancels any modal affordance — an open popover
+			// and/or the overwrite-on-refocus state; second press quits.
+			canceled := false
+			if active := m.headerOrder[m.tabIndex]; active.kind == kindInput && (active.index == 0 || active.index == 1) {
+				if m.overwriteOnType[active.index] {
+					m.setOverwrite(active.index, false)
+					canceled = true
+				}
+			}
+			if m.popover != nil {
+				m.popover = nil
+				canceled = true
+			}
+			if canceled {
+				return m, nil
+			}
 			return m, tea.Quit
 
 		case "q":
@@ -38,6 +57,24 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "enter":
+			// If the focused input is in overwrite (refocused-with-content)
+			// state, the user is committing the prior value — do not swap
+			// it for the popover's top match. Otherwise commit popover
+			// selection so a freshly-typed alias resolves to canonical.
+			active := m.headerOrder[m.tabIndex]
+			overwriteActive := false
+			if active.kind == kindInput && (active.index == 0 || active.index == 1) {
+				overwriteActive = m.overwriteOnType[active.index]
+			}
+			if overwriteActive {
+				m.setOverwrite(active.index, false)
+			} else {
+				m.commitPopoverSelection()
+			}
+			// Always close the popover on search — including the "no match"
+			// case where the typed input is something the API can still
+			// resolve (e.g. an address like "11 route de bardonnex").
+			m.popover = nil
 			if err := m.validateInputs(); err != nil {
 				m.errorMsg = err
 				m.connections = nil
@@ -76,6 +113,18 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "tab", "shift+tab":
+			// Clear overwrite affordance on the old field (if any) before
+			// leaving so the value renders normally next time.
+			if oldActive := m.headerOrder[m.tabIndex]; oldActive.kind == kindInput && (oldActive.index == 0 || oldActive.index == 1) {
+				if m.overwriteOnType[oldActive.index] {
+					m.setOverwrite(oldActive.index, false)
+				}
+			}
+
+			// Commit popover before leaving the field so the next field
+			// receives the canonical resolution of what was typed.
+			m.commitPopoverSelection()
+
 			if msg.String() == "shift+tab" {
 				m.tabIndex--
 			} else {
@@ -100,9 +149,31 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 				}
 			}
+
+			// Repopulate the popover for the newly focused From/To field
+			// and, if it already has content, switch on the overwrite
+			// affordance: value renders faded, cursor at start. Typing a
+			// character replaces the value; Enter keeps it as-is.
+			active := m.headerOrder[m.tabIndex]
+			if m.fuzzy && active.kind == kindInput && (active.index == 0 || active.index == 1) {
+				if m.inputs[active.index].Value() != "" {
+					m.setOverwrite(active.index, true)
+				}
+				m.refreshPopover(active.index)
+			} else {
+				m.popover = nil
+			}
 			return m, tea.Batch(cmds...)
 
 		case "right":
+			// In overwrite (refocus-with-content) state, → cancels the
+			// affordance, parks the cursor at end-of-value, and lets the
+			// user keep typing from there. Acts as "append to prior value".
+			if active := m.headerOrder[m.tabIndex]; active.kind == kindInput && (active.index == 0 || active.index == 1) && m.overwriteOnType[active.index] {
+				m.inputs[active.index].SetCursor(len([]rune(m.inputs[active.index].Value())))
+				m.setOverwrite(active.index, false)
+				return m, nil
+			}
 			// Suppress autocomplete acceptance when the cursor is mid-string;
 			// the user just wants to move right.
 			active := m.headerOrder[m.tabIndex]
@@ -121,11 +192,27 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "up":
+			if m.popover != nil && len(m.popover.matches) > 0 {
+				if m.popover.selected > 0 {
+					m.popover.selected--
+				} else {
+					m.popover.selected = len(m.popover.matches) - 1
+				}
+				return m, nil
+			}
 			if len(m.connections) > 0 && m.resultIndex > 0 {
 				m.resultIndex--
 				m.detailScrollY = 0
 			}
 		case "down":
+			if m.popover != nil && len(m.popover.matches) > 0 {
+				if m.popover.selected < len(m.popover.matches)-1 {
+					m.popover.selected++
+				} else {
+					m.popover.selected = 0
+				}
+				return m, nil
+			}
 			if len(m.connections) > 0 && m.resultIndex < len(m.connections)-1 {
 				m.resultIndex++
 				m.detailScrollY = 0
@@ -142,16 +229,38 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case suggestTickMsg:
 		// Only fetch when no newer keystroke has invalidated this tick.
-		if msg.seq == m.suggestSeq[msg.inputIndex] {
-			query := m.inputs[msg.inputIndex].Value()
-			return m, fetchSuggestionsCmd(msg.inputIndex, query)
+		if msg.seq != m.suggestSeq[msg.inputIndex] {
+			return m, nil
 		}
-		return m, nil
+		query := m.inputs[msg.inputIndex].Value()
+		if m.fuzzy {
+			return m, fetchAPIHitsCmd(msg.inputIndex, msg.seq, query)
+		}
+		return m, fetchSuggestionsCmd(msg.inputIndex, query)
 
 	case suggestionsMsg:
 		if msg.err == nil {
 			userInput := m.inputs[msg.inputIndex].Value()
 			m.inputs[msg.inputIndex].SetSuggestions(adaptSuggestions(userInput, msg.names))
+		}
+		return m, nil
+
+	case apiHitsMsg:
+		// Stale or unrelated response — ignore.
+		if msg.seq != m.suggestSeq[msg.inputIndex] {
+			return m, nil
+		}
+		if msg.err == nil && m.apiCache != nil {
+			hits := make([]querycache.Hit, len(msg.hits))
+			copy(hits, msg.hits)
+			m.apiCache.Insert(msg.query, hits)
+		}
+		// Rebuild the popover with the fresh cache so the new hits appear.
+		if m.popover != nil && m.popover.inputIdx == msg.inputIndex {
+			m.popover.matches = m.buildPopoverMatches(m.inputs[msg.inputIndex].Value())
+			if m.popover.selected >= len(m.popover.matches) {
+				m.popover.selected = 0
+			}
 		}
 		return m, nil
 
@@ -197,6 +306,31 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // debounced suggestion fetches and ghost-completion updates.
 func (m *appModel) updateInputs(msg tea.Msg) tea.Cmd {
 	cmds := make([]tea.Cmd, len(m.inputs))
+
+	// Overwrite-on-refocus: when the focused From/To input is showing a
+	// faded prior value, the first typed rune wipes the value before the
+	// textinput sees the keystroke. Backspace cancels the affordance and
+	// moves the cursor to the end, so the next Backspace deletes a char
+	// normally instead of being a no-op at position 0.
+	if keyMsg, ok := msg.(tea.KeyMsg); ok {
+		active := m.headerOrder[m.tabIndex]
+		if active.kind == kindInput && (active.index == 0 || active.index == 1) && m.overwriteOnType[active.index] {
+			switch keyMsg.Type {
+			case tea.KeyRunes:
+				m.inputs[active.index].SetValue("")
+				m.inputs[active.index].SetCursor(0)
+				if active.index == 0 {
+					m.lastFromQuery = ""
+				} else {
+					m.lastToQuery = ""
+				}
+				m.setOverwrite(active.index, false)
+			case tea.KeyBackspace:
+				m.inputs[active.index].SetCursor(len([]rune(m.inputs[active.index].Value())))
+				m.setOverwrite(active.index, false)
+			}
+		}
+	}
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -290,29 +424,41 @@ func (m *appModel) updateInputs(msg tea.Msg) tea.Cmd {
 		m.inputs[i], cmds[i] = m.inputs[i].Update(msg)
 	}
 
-	// Schedule a debounced suggestion fetch when the From/To values change.
-	if fromVal := m.inputs[0].Value(); fromVal != m.lastFromQuery {
-		m.lastFromQuery = fromVal
-		if len(fromVal) >= 2 {
-			m.suggestSeq[0]++
-			seq := m.suggestSeq[0]
-			cmds = append(cmds, tea.Tick(suggestDebounce, func(time.Time) tea.Msg {
-				return suggestTickMsg{inputIndex: 0, seq: seq}
-			}))
+	// Refresh suggestions for the From/To values. With fuzzy enabled we
+	// run the local matcher (cache hits included) synchronously and
+	// schedule a debounced API fetch that, on arrival, merges fresh hits
+	// into the popover and persists them.
+	for inputIdx := 0; inputIdx < 2; inputIdx++ {
+		val := m.inputs[inputIdx].Value()
+		var prev *string
+		if inputIdx == 0 {
+			prev = &m.lastFromQuery
 		} else {
-			m.inputs[0].SetSuggestions(nil)
+			prev = &m.lastToQuery
 		}
-	}
-	if toVal := m.inputs[1].Value(); toVal != m.lastToQuery {
-		m.lastToQuery = toVal
-		if len(toVal) >= 2 {
-			m.suggestSeq[1]++
-			seq := m.suggestSeq[1]
+		if val == *prev {
+			continue
+		}
+		*prev = val
+		if m.fuzzy {
+			m.refreshPopover(inputIdx)
+			if len(val) >= 2 {
+				m.suggestSeq[inputIdx]++
+				seq := m.suggestSeq[inputIdx]
+				idx := inputIdx
+				cmds = append(cmds, tea.Tick(suggestDebounce, func(time.Time) tea.Msg {
+					return suggestTickMsg{inputIndex: idx, seq: seq}
+				}))
+			}
+		} else if len(val) >= 2 {
+			m.suggestSeq[inputIdx]++
+			seq := m.suggestSeq[inputIdx]
+			idx := inputIdx
 			cmds = append(cmds, tea.Tick(suggestDebounce, func(time.Time) tea.Msg {
-				return suggestTickMsg{inputIndex: 1, seq: seq}
+				return suggestTickMsg{inputIndex: idx, seq: seq}
 			}))
 		} else {
-			m.inputs[1].SetSuggestions(nil)
+			m.inputs[inputIdx].SetSuggestions(nil)
 		}
 	}
 
@@ -332,6 +478,78 @@ func (m appModel) validateInputs() error {
 		return errMissingArrival
 	}
 	return nil
+}
+
+// refreshPopover runs the local fuzzy matcher against the current value of
+// inputs[inputIdx] and populates m.popover. Cached API hits from prior
+// queries are merged in immediately; the live API fetch is scheduled by
+// the caller via the suggestSeq tick. Nil-ed when the input is too short
+// or the matcher is unavailable.
+func (m *appModel) refreshPopover(inputIdx int) {
+	if m.fuzzyIdx == nil {
+		m.popover = nil
+		return
+	}
+	active := m.headerOrder[m.tabIndex]
+	if active.kind != kindInput || active.index != inputIdx {
+		if m.popover != nil && m.popover.inputIdx == inputIdx {
+			m.popover = nil
+		}
+		return
+	}
+	val := m.inputs[inputIdx].Value()
+	if len(val) < 2 {
+		m.popover = nil
+		return
+	}
+	matches := m.buildPopoverMatches(val)
+	m.popover = &popoverState{
+		inputIdx: inputIdx,
+		matches:  matches,
+		selected: 0,
+	}
+}
+
+// popoverRows is the maximum number of rows shown in the fuzzy popover.
+const popoverRows = 8
+
+// commitPopoverSelection replaces the focused input's value with the canonical
+// name of the highlighted popover row and clears the popover. No-op when the
+// popover is not visible or has no rows.
+func (m *appModel) commitPopoverSelection() {
+	p := m.popover
+	if p == nil || len(p.matches) == 0 {
+		return
+	}
+	canonical := p.matches[p.selected].Station.Name
+	m.inputs[p.inputIdx].SetValue(canonical)
+	m.inputs[p.inputIdx].SetCursor(len([]rune(canonical)))
+	if p.inputIdx == 0 {
+		m.lastFromQuery = canonical
+	} else {
+		m.lastToQuery = canonical
+	}
+	m.popover = nil
+}
+
+// fetchAPIHitsCmd asks the SBB locations endpoint for structured station
+// hits (UIC + name + icon) and returns an apiHitsMsg. The seq is propagated
+// back so a stale response can be ignored after newer keystrokes.
+func fetchAPIHitsCmd(inputIndex, seq int, query string) tea.Cmd {
+	return func() tea.Msg {
+		locs, err := api.FetchLocationsWithIDs(query)
+		if err != nil {
+			return apiHitsMsg{inputIndex: inputIndex, seq: seq, query: query, err: err}
+		}
+		hits := make([]querycache.Hit, 0, len(locs))
+		for _, l := range locs {
+			if l.UIC == "" || l.Name == "" {
+				continue
+			}
+			hits = append(hits, querycache.Hit{UIC: l.UIC, Name: l.Name, Icon: l.Icon})
+		}
+		return apiHitsMsg{inputIndex: inputIndex, seq: seq, query: query, hits: hits}
+	}
 }
 
 // fetchSuggestionsCmd asynchronously asks the API for station suggestions.

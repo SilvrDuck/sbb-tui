@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sbb-tui fuzzy ranking — A/B labeling</title>
+<style>
+  :root {
+    --bg: #1f232b;
+    --panel: #272b34;
+    --text: #d9dde3;
+    --muted: #7b8390;
+    --accent: #e67e7e;
+    --border: #3a4150;
+    --border-focus: #e67e7e;
+    --good: #7bbf7b;
+    --warn: #d2a366;
+    --bad: #b87575;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+               font-family: "SF Mono", "Menlo", "Consolas", monospace; font-size: 13px; }
+  body { padding: 18px 12px 30px; min-height: 100vh; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  h1 { font-size: 15px; font-weight: 600; margin: 0; }
+  .progress { color: var(--muted); font-size: 12px; }
+  .progress strong { color: var(--text); }
+  .progress .saved { color: var(--good); }
+  .meta { color: var(--muted); margin: 4px 0 2px; font-size: 11px; }
+  .note { color: var(--warn); margin-bottom: 8px; font-size: 12px; font-style: italic; min-height: 1em; }
+  .query-line { font-size: 16px; margin: 6px 0 14px; }
+  .query-line .label { color: var(--muted); font-size: 12px; margin-right: 6px; }
+  .query-line .q { color: var(--text); padding: 2px 8px; border: 1px solid var(--border-focus); border-radius: 3px; }
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .col { background: var(--panel); border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; overflow: hidden; }
+  .col h2 { margin: 0 0 6px; font-size: 12px; color: var(--muted); font-weight: 600;
+            display: flex; justify-content: space-between; align-items: baseline; }
+  .col h2 .variant-tag { color: var(--warn); font-size: 10px; font-weight: 400; }
+  .row { display: flex; gap: 8px; padding: 1px 0; align-items: baseline; min-width: 0; }
+  .row .lhs { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .arrow { color: var(--muted); flex: 0 0 auto; }
+  .row .canonical { color: var(--text); font-weight: 600; flex: 0 1 auto; min-width: 0;
+                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%; }
+  .row .mode { color: var(--muted); font-size: 10px; flex: 0 0 auto; min-width: 36px; text-align: right; }
+  .row.train .mode { color: var(--accent); }
+  .hl { color: var(--accent); font-weight: 600; }
+  .empty { color: var(--muted); font-style: italic; }
+  .actions { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+  .actions button {
+    background: var(--panel); color: var(--text); border: 1px solid var(--border);
+    padding: 7px 18px; font-size: 13px; font-family: inherit; border-radius: 4px;
+    cursor: pointer; min-width: 120px;
+  }
+  .actions button:hover { border-color: var(--border-focus); }
+  .actions button.choose-a { border-color: #5e8fc7; }
+  .actions button.choose-b { border-color: #c78b5e; }
+  .actions button.choose-skip { border-color: var(--muted); }
+  .actions .kbd { display: inline-block; padding: 1px 5px; margin-right: 4px;
+                  background: var(--bg); border-radius: 3px; font-size: 10px; color: var(--muted); }
+  .help { color: var(--muted); font-size: 11px; text-align: center; margin-top: 4px; }
+  .nav { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+  .nav a { color: var(--muted); cursor: pointer; text-decoration: none; font-size: 11px; }
+  .nav a:hover { color: var(--text); }
+  .toast { position: fixed; right: 16px; bottom: 16px; padding: 8px 12px;
+           background: var(--panel); border: 1px solid var(--border); border-radius: 4px;
+           font-size: 12px; color: var(--muted); opacity: 0; transition: opacity 0.2s; }
+  .toast.show { opacity: 1; }
+  .toast.error { color: var(--bad); border-color: var(--bad); }
+  #done { text-align: center; margin-top: 80px; }
+  #done h2 { color: var(--good); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>sbb-tui — A/B ranking labels</h1>
+  <div class="progress" id="progress">loading…</div>
+</header>
+
+<div id="main">
+  <div class="meta" id="meta"></div>
+  <div class="note" id="note"></div>
+  <div class="query-line"><span class="label">query:</span><span class="q" id="query">—</span></div>
+
+  <div class="columns">
+    <div class="col" id="colA">
+      <h2>A <span class="variant-tag">production</span></h2>
+      <div id="listA"></div>
+    </div>
+    <div class="col" id="colB">
+      <h2>B <span class="variant-tag" id="variantTag"></span></h2>
+      <div id="listB"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="choose-a" data-choice="A"><span class="kbd">A</span>Prefer A</button>
+    <button class="choose-skip" data-choice="skip"><span class="kbd">␣</span>No preference</button>
+    <button class="choose-b" data-choice="B"><span class="kbd">B</span>Prefer B</button>
+  </div>
+  <div class="help">Keys — <strong>A</strong> = left,  <strong>B</strong> = right,  <strong>Space</strong> = skip,  <strong>←/→</strong> = prev/next,  <strong>Backspace</strong> = undo</div>
+
+  <div class="nav">
+    <a data-action="prev">← prev</a>
+    <a data-action="next">next →</a>
+    <a data-action="unlabeled">→ next unlabeled</a>
+    <a data-action="summary">summary</a>
+  </div>
+</div>
+
+<div id="done" style="display:none">
+  <h2>All examples labeled ✓</h2>
+  <div class="progress" id="doneSummary"></div>
+  <div class="nav"><a data-action="restart">label again</a></div>
+</div>
+
+</div><!-- /wrap -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+let examples = [];
+let labels = {};
+let idx = 0;
+
+function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+
+function rowEl(r) {
+  const row = document.createElement("div");
+  row.className = "row" + (r.mode === "TRAIN" ? " train" : "");
+
+  const lhs = document.createElement("div");
+  lhs.className = "lhs";
+  const positions = new Set(r.displayPos || []);
+  const chars = Array.from(r.displayStr || "");
+  for (let i = 0; i < chars.length; i++) {
+    if (positions.has(i)) {
+      const span = document.createElement("span");
+      span.className = "hl";
+      span.textContent = chars[i];
+      lhs.appendChild(span);
+    } else {
+      lhs.appendChild(document.createTextNode(chars[i]));
+    }
+  }
+  row.appendChild(lhs);
+
+  const showAlias = r.displayStr !== r.canonical;
+  const arrow = document.createElement("span");
+  arrow.className = "arrow";
+  arrow.textContent = showAlias ? "→" : "";
+  row.appendChild(arrow);
+
+  const canonical = document.createElement("span");
+  canonical.className = "canonical";
+  canonical.textContent = showAlias ? r.canonical : "";
+  row.appendChild(canonical);
+
+  const mode = document.createElement("span");
+  mode.className = "mode";
+  mode.textContent = r.mode || "";
+  row.appendChild(mode);
+
+  return row;
+}
+
+function renderList(rs, containerId) {
+  const el = document.getElementById(containerId);
+  clear(el);
+  if (!rs || rs.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "(no matches)";
+    el.appendChild(empty);
+    return;
+  }
+  for (const r of rs) el.appendChild(rowEl(r));
+}
+
+function renderExample() {
+  if (idx < 0) idx = 0;
+  if (idx >= examples.length) { showDone(); return; }
+  document.getElementById("main").style.display = "";
+  document.getElementById("done").style.display = "none";
+  const e = examples[idx];
+  document.getElementById("meta").textContent = `id=${e.id}  category=${e.category}`;
+  document.getElementById("note").textContent = e.note || "";
+  document.getElementById("query").textContent = e.query || "(empty)";
+  document.getElementById("variantTag").textContent = e.variant;
+  renderList(e.a, "listA");
+  renderList(e.b, "listB");
+  updateProgress();
+}
+
+function updateProgress() {
+  const labeled = Object.keys(labels).length;
+  const cur = examples[idx];
+  const lbl = cur ? labels[cur.id] : null;
+  const el = document.getElementById("progress");
+  clear(el);
+  const strong = document.createElement("strong");
+  strong.textContent = String(idx + 1);
+  el.appendChild(strong);
+  el.appendChild(document.createTextNode(` / ${examples.length} — `));
+  const saved = document.createElement("span");
+  saved.className = "saved";
+  saved.textContent = String(labeled);
+  el.appendChild(saved);
+  el.appendChild(document.createTextNode(" saved"));
+  if (lbl) {
+    el.appendChild(document.createTextNode(" — labeled: "));
+    const c = document.createElement("span");
+    c.className = "saved";
+    c.textContent = lbl.choice;
+    el.appendChild(c);
+  }
+}
+
+function choose(choice) {
+  const e = examples[idx];
+  if (!e) return;
+  const decision = {
+    id: e.id, query: e.query, category: e.category, variant: e.variant,
+    choice, ts: new Date().toISOString(),
+  };
+  labels[e.id] = decision;
+  saveLocal();
+  fetch("/save", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(decision),
+  }).then(r => {
+    if (!r.ok) toast(`server error ${r.status}`, true);
+    else toast(`saved ${choice} for #${e.id}`);
+  }).catch(err => toast(`save failed: ${err}`, true));
+  goUnlabeled();
+}
+
+function next() { idx++; renderExample(); }
+function prev() { idx--; renderExample(); }
+
+function goUnlabeled() {
+  for (let i = idx + 1; i < examples.length; i++) {
+    if (!labels[examples[i].id]) { idx = i; renderExample(); return; }
+  }
+  for (let i = 0; i < idx; i++) {
+    if (!labels[examples[i].id]) { idx = i; renderExample(); return; }
+  }
+  showDone();
+}
+
+function undo() {
+  const e = examples[idx];
+  if (e && labels[e.id]) {
+    delete labels[e.id];
+    saveLocal();
+    fetch("/save", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: e.id, choice: "__undo__", ts: new Date().toISOString() }),
+    }).catch(() => {});
+    updateProgress();
+    toast(`undid label for #${e.id}`);
+  } else {
+    prev();
+  }
+}
+
+function saveLocal() {
+  try { localStorage.setItem("sbb-labels", JSON.stringify(labels)); } catch (e) {}
+}
+function loadLocal() {
+  try { const raw = localStorage.getItem("sbb-labels"); if (raw) labels = JSON.parse(raw); }
+  catch (e) { labels = {}; }
+}
+
+function showDone() {
+  document.getElementById("main").style.display = "none";
+  document.getElementById("done").style.display = "";
+  const counts = { A: 0, B: 0, skip: 0 };
+  Object.values(labels).forEach(d => { counts[d.choice] = (counts[d.choice] || 0) + 1; });
+  document.getElementById("doneSummary").textContent =
+    `A=${counts.A}  B=${counts.B}  skip=${counts.skip}  (of ${examples.length})`;
+}
+
+function restart() {
+  idx = 0;
+  document.getElementById("main").style.display = "";
+  document.getElementById("done").style.display = "none";
+  renderExample();
+}
+
+function toast(msg, isErr) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.toggle("error", !!isErr);
+  t.classList.add("show");
+  clearTimeout(toast._h);
+  toast._h = setTimeout(() => t.classList.remove("show"), 1500);
+}
+
+document.querySelectorAll(".actions button").forEach(btn => {
+  btn.addEventListener("click", () => choose(btn.getAttribute("data-choice")));
+});
+document.querySelectorAll(".nav a").forEach(a => {
+  const action = a.getAttribute("data-action");
+  a.addEventListener("click", () => {
+    if (action === "prev") prev();
+    else if (action === "next") next();
+    else if (action === "unlabeled") goUnlabeled();
+    else if (action === "summary") showDone();
+    else if (action === "restart") restart();
+  });
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  const k = e.key.toLowerCase();
+  if (k === "a") { choose("A"); e.preventDefault(); }
+  else if (k === "b") { choose("B"); e.preventDefault(); }
+  else if (k === " " || k === "s") { choose("skip"); e.preventDefault(); }
+  else if (k === "arrowleft") { prev(); e.preventDefault(); }
+  else if (k === "arrowright") { next(); e.preventDefault(); }
+  else if (k === "backspace") { undo(); e.preventDefault(); }
+});
+
+Promise.all([
+  fetch("/examples.json").then(r => r.json()),
+  fetch("/decisions.jsonl").then(r => r.ok ? r.text() : "").catch(() => ""),
+]).then(([ex, jsonl]) => {
+  examples = ex;
+  loadLocal();
+  jsonl.split("\n").forEach(line => {
+    if (!line) return;
+    try {
+      const d = JSON.parse(line);
+      if (d.choice === "__undo__") delete labels[d.id];
+      else labels[d.id] = d;
+    } catch (e) {}
+  });
+  saveLocal();
+  idx = 0;
+  for (let i = 0; i < examples.length; i++) {
+    if (!labels[examples[i].id]) { idx = i; break; }
+    idx = examples.length;
+  }
+  renderExample();
+}).catch(err => {
+  document.getElementById("progress").textContent = "failed to load examples: " + err;
+});
+</script>
+
+</body>
+</html>

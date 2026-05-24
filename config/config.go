@@ -19,6 +19,7 @@ type Config struct {
 	IsArrivalTime  bool
 	NerdFont       bool
 	Animations     bool
+	Fuzzy          bool
 	Theme          Theme
 	CurrentVersion string
 }
@@ -122,6 +123,7 @@ func LoadConfig() (Config, error) {
 	result := Config{
 		NerdFont:   true,
 		Animations: true,
+		Fuzzy:      true,
 		Theme:      DefaultTheme(),
 	}
 

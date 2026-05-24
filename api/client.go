@@ -13,16 +13,43 @@ import (
 
 type locationsResponse struct {
 	Stations []struct {
+		ID   string `json:"id"`
 		Name string `json:"name"`
+		Icon string `json:"icon"`
 	} `json:"stations"`
+}
+
+// Location is a structured station hit returned by the SBB locations endpoint.
+// ID is the UIC code that joins back to the local Service Points dataset.
+type Location struct {
+	UIC  string
+	Name string
+	Icon string
 }
 
 type connectionsResponse struct {
 	Connections []model.Connection `json:"connections"`
 }
 
-// FetchLocations returns station name suggestions matching query.
+// FetchLocations returns station name suggestions matching query. Kept for
+// the legacy --fuzzy=false path; the fuzzy popover uses FetchLocationsWithIDs.
 func FetchLocations(query string) ([]string, error) {
+	locs, err := FetchLocationsWithIDs(query)
+	if err != nil {
+		return nil, err
+	}
+	names := make([]string, 0, len(locs))
+	for _, l := range locs {
+		if l.Name != "" {
+			names = append(names, l.Name)
+		}
+	}
+	return names, nil
+}
+
+// FetchLocationsWithIDs returns structured station hits with UIC + icon, so
+// the caller can dedup-by-UIC against the local station index.
+func FetchLocationsWithIDs(query string) ([]Location, error) {
 	apiURL := "https://transport.opendata.ch/v1/locations?type=station&query=" + url.QueryEscape(query)
 
 	resp, err := http.Get(apiURL)
@@ -40,13 +67,14 @@ func FetchLocations(query string) ([]string, error) {
 		return nil, fmt.Errorf("fetching locations: decoding response: %w", err)
 	}
 
-	names := make([]string, 0, len(result.Stations))
+	locs := make([]Location, 0, len(result.Stations))
 	for _, s := range result.Stations {
-		if s.Name != "" {
-			names = append(names, s.Name)
+		if s.Name == "" {
+			continue
 		}
+		locs = append(locs, Location{UIC: s.ID, Name: s.Name, Icon: s.Icon})
 	}
-	return names, nil
+	return locs, nil
 }
 
 // FetchConnections returns up to `limit` connections between two stations.

@@ -11,6 +11,8 @@ import (
 
 	"github.com/necrom4/sbb-tui/config"
 	"github.com/necrom4/sbb-tui/model"
+	"github.com/necrom4/sbb-tui/ui/querycache"
+	"github.com/necrom4/sbb-tui/ui/stations"
 	"github.com/necrom4/sbb-tui/util"
 )
 
@@ -49,6 +51,17 @@ type suggestionsMsg struct {
 	err        error
 }
 
+// apiHitsMsg carries SBB locations-API results for the fuzzy popover. The
+// seq number must match m.suggestSeq to guard against races when the user
+// has kept typing.
+type apiHitsMsg struct {
+	inputIndex int
+	seq        int
+	query      string
+	hits       []querycache.Hit
+	err        error
+}
+
 const suggestDebounce = 300 * time.Millisecond
 
 // suggestTickMsg fires after the debounce window so we know whether to fetch.
@@ -60,6 +73,14 @@ type suggestTickMsg struct {
 // versionCheckMsg carries the result of the GitHub release lookup.
 type versionCheckMsg struct {
 	newerVersion string
+}
+
+// popoverState carries the fuzzy-picker overlay shown under a focused
+// From/To input. Non-nil only while the popover is visible.
+type popoverState struct {
+	inputIdx int              // 0 = from, 1 = to
+	matches  []stations.Match // top-N local fuzzy matches for the current input value
+	selected int              // 0-based highlight index
 }
 
 // appModel is the Bubbletea model that backs the whole TUI.
@@ -86,6 +107,62 @@ type appModel struct {
 	newerVersion   string
 	animations     bool
 	anim           animator
+	fuzzy           bool
+	fuzzyIdx        *stations.Index
+	scoreCfg        stations.ScoreConfig
+	popover         *popoverState
+	overwriteOnType [2]bool // when true, next typed rune clears From/To value first
+	apiCache        *querycache.Cache
+}
+
+// Close performs any shutdown-time persistence (currently: flushing the
+// on-disk query cache). Safe to call once after tea.Program.Run returns.
+func (m appModel) Close() {
+	if m.apiCache != nil {
+		_ = m.apiCache.Save()
+	}
+}
+
+// setOverwrite toggles the "refocused with content" affordance on inputs[idx]:
+// when on, the value is rendered faded and the cursor is parked at start,
+// so the user sees the prior value but knows typing any character will
+// replace it. Pressing Enter without typing keeps the prior value.
+func (m *appModel) setOverwrite(idx int, on bool) {
+	m.overwriteOnType[idx] = on
+	if on {
+		m.inputs[idx].TextStyle = m.styles.textMuted
+		m.inputs[idx].SetCursor(0)
+	} else {
+		m.inputs[idx].TextStyle = m.styles.text
+	}
+}
+
+// defaultScoreConfig is the tuned baseline scoring. The base weights
+// (PrefixBonus, AbbrExactBonus, ModeBonus, ChairliftPenalty) come from
+// a 500-sample random search + coordinate-descent refinement on the
+// 100-scenario suite at data/scenarios.json (80/20 train/holdout split,
+// seed=42), re-run after the Wikidata alias enrichment landed.
+//
+// ConsecutiveBonus was bumped 20 → 300 after the human A/B labeling
+// round (data/label-decisions.jsonl, 2026-05-24) where the labeler
+// preferred consecutive-strong over both production and the
+// substring-exact-rerank variant for the "Renens VD"-style query class
+// — a query that is a contiguous substring of a TRAIN canonical should
+// surface that canonical first, not scatter-letter matches.
+func defaultScoreConfig() stations.ScoreConfig {
+	return stations.ScoreConfig{
+		PrefixBonus:      100,
+		AbbrExactBonus:   200,
+		ConsecutiveBonus: 300,
+		ModeBonus: map[string]int{
+			"TRAIN": 250,
+			"METRO": 150,
+			"TRAM":  200,
+			"BOAT":  100,
+			"BUS":   0,
+		},
+		ChairliftPenalty: 200,
+	}
 }
 
 // NewModel builds the initial Bubbletea model from the resolved Config.
@@ -108,6 +185,24 @@ func NewModel(cfg config.Config) appModel {
 		currentVersion: cfg.CurrentVersion,
 		animations:     cfg.Animations,
 		anim:           newAnimator(),
+		fuzzy:          cfg.Fuzzy,
+		scoreCfg:       defaultScoreConfig(),
+	}
+
+	if cfg.Fuzzy {
+		idx, err := stations.Load()
+		if err == nil {
+			m.fuzzyIdx = idx
+		} else {
+			// Silently fall back to the old API-driven path; the spike
+			// branch keeps both behaviours so a broken index does not
+			// brick the app.
+			m.fuzzy = false
+		}
+
+		if path, err := querycache.DefaultPath(); err == nil {
+			m.apiCache = querycache.Load(path)
+		}
 	}
 
 	now := time.Now()
@@ -124,7 +219,10 @@ func NewModel(cfg config.Config) appModel {
 		t.Cursor.Style = m.styles.active
 		t.CompletionStyle = m.styles.textMuted
 		t.Prompt = m.icons.prompt
-		t.ShowSuggestions = true
+		// With fuzzy enabled, From/To inputs use the popover instead of
+		// the textinput widget's ghost completion; date/time still use
+		// the inline completion.
+		t.ShowSuggestions = !(cfg.Fuzzy && (i == 0 || i == 1))
 
 		switch i {
 		case 0:

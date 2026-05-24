@@ -1,0 +1,120 @@
+{
+  "Q1248784": {
+    "alts": [
+      "Airport",
+      "Heimatflughafen",
+      "Jetport",
+      "Startflughafen",
+      "Zielflughafen",
+      "aerodrome",
+      "aeroporti",
+      "air port",
+      "airports",
+      "aéroports",
+      "aéroportuaire",
+      "hall d'aéroport",
+      "scalo",
+      "sécurité dans les aéroports",
+      "zonage aéroportuaire"
+    ],
+    "concept": "airport",
+    "labels": {
+      "de": "Flughafen",
+      "en": "airport",
+      "fr": "aéroport",
+      "it": "aeroporto"
+    }
+  },
+  "Q18543139": {
+    "alts": [
+      "Hb",
+      "Hbf",
+      "main station"
+    ],
+    "concept": "central station",
+    "labels": {
+      "de": "Hauptbahnhof",
+      "en": "central station",
+      "fr": "gare centrale",
+      "it": "stazione centrale"
+    }
+  },
+  "Q2175765": {
+    "alts": [
+      "Straßenbahnstation",
+      "Tramhaltestelle",
+      "arrêt de tram",
+      "arrêt de tramway",
+      "light rail station",
+      "light rail stop",
+      "station de métro léger",
+      "station de tram",
+      "stazione del tram",
+      "streetcar station",
+      "streetcar stop",
+      "tram station",
+      "tram stop",
+      "trolley station",
+      "trolley stop"
+    ],
+    "concept": "tram stop",
+    "labels": {
+      "de": "Straßenbahnhaltestelle",
+      "en": "tram stop",
+      "fr": "station de tramway",
+      "it": "fermata del tram"
+    }
+  },
+  "Q55488": {
+    "alts": [
+      "Bahnstation",
+      "Bf",
+      "Bhf.",
+      "gare",
+      "gare de chemin de fer",
+      "gare de train",
+      "rail station",
+      "rail stop",
+      "railroad station",
+      "railway stop",
+      "scalo ferroviario",
+      "station ferroviaire",
+      "stazioni ferroviarie",
+      "train station",
+      "train stop"
+    ],
+    "concept": "railway station",
+    "labels": {
+      "de": "Bahnhof",
+      "en": "railway station",
+      "fr": "gare ferroviaire",
+      "it": "stazione ferroviaria"
+    }
+  },
+  "Q928830": {
+    "alts": [
+      "U-Bahn-Haltestelle",
+      "U-Bahn-Station",
+      "U-Bahnhaltestelle",
+      "U-Bahnstation",
+      "U-Bf.",
+      "U-Bhf.",
+      "U-Hst.",
+      "metro stop",
+      "rapid transit station",
+      "rapid transit stop",
+      "stazione della metropolitana",
+      "subway station",
+      "subway stop",
+      "tube station",
+      "tube stop"
+    ],
+    "concept": "metro station",
+    "labels": {
+      "de": "U-Bahnhof",
+      "en": "metro station",
+      "fr": "station de métro",
+      "it": "stazione metropolitana"
+    }
+  }
+}
