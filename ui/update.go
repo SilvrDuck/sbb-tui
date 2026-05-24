@@ -13,7 +13,6 @@ import (
 
 	"github.com/necrom4/sbb-tui/api"
 	"github.com/necrom4/sbb-tui/model"
-	"github.com/necrom4/sbb-tui/ui/querycache"
 )
 
 // Update implements tea.Model.
@@ -232,35 +231,12 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.seq != m.suggestSeq[msg.inputIndex] {
 			return m, nil
 		}
-		query := m.inputs[msg.inputIndex].Value()
-		if m.fuzzy {
-			return m, fetchAPIHitsCmd(msg.inputIndex, msg.seq, query)
-		}
-		return m, fetchSuggestionsCmd(msg.inputIndex, query)
+		return m, fetchSuggestionsCmd(msg.inputIndex, m.inputs[msg.inputIndex].Value())
 
 	case suggestionsMsg:
 		if msg.err == nil {
 			userInput := m.inputs[msg.inputIndex].Value()
 			m.inputs[msg.inputIndex].SetSuggestions(adaptSuggestions(userInput, msg.names))
-		}
-		return m, nil
-
-	case apiHitsMsg:
-		// Stale or unrelated response — ignore.
-		if msg.seq != m.suggestSeq[msg.inputIndex] {
-			return m, nil
-		}
-		if msg.err == nil && m.apiCache != nil {
-			hits := make([]querycache.Hit, len(msg.hits))
-			copy(hits, msg.hits)
-			m.apiCache.Insert(msg.query, hits)
-		}
-		// Rebuild the popover with the fresh cache so the new hits appear.
-		if m.popover != nil && m.popover.inputIdx == msg.inputIndex {
-			m.popover.matches = m.buildPopoverMatches(m.inputs[msg.inputIndex].Value())
-			if m.popover.selected >= len(m.popover.matches) {
-				m.popover.selected = 0
-			}
 		}
 		return m, nil
 
@@ -424,10 +400,10 @@ func (m *appModel) updateInputs(msg tea.Msg) tea.Cmd {
 		m.inputs[i], cmds[i] = m.inputs[i].Update(msg)
 	}
 
-	// Refresh suggestions for the From/To values. With fuzzy enabled we
-	// run the local matcher (cache hits included) synchronously and
-	// schedule a debounced API fetch that, on arrival, merges fresh hits
-	// into the popover and persists them.
+	// Refresh suggestions for the From/To values. With fuzzy enabled the
+	// popover replaces the ghost-completion suggestion entirely and is
+	// computed synchronously from the local index. The async suggestion
+	// fetch only fires for the --fuzzy=false legacy path.
 	for inputIdx := 0; inputIdx < 2; inputIdx++ {
 		val := m.inputs[inputIdx].Value()
 		var prev *string
@@ -442,14 +418,6 @@ func (m *appModel) updateInputs(msg tea.Msg) tea.Cmd {
 		*prev = val
 		if m.fuzzy {
 			m.refreshPopover(inputIdx)
-			if len(val) >= 2 {
-				m.suggestSeq[inputIdx]++
-				seq := m.suggestSeq[inputIdx]
-				idx := inputIdx
-				cmds = append(cmds, tea.Tick(suggestDebounce, func(time.Time) tea.Msg {
-					return suggestTickMsg{inputIndex: idx, seq: seq}
-				}))
-			}
 		} else if len(val) >= 2 {
 			m.suggestSeq[inputIdx]++
 			seq := m.suggestSeq[inputIdx]
@@ -481,10 +449,10 @@ func (m appModel) validateInputs() error {
 }
 
 // refreshPopover runs the local fuzzy matcher against the current value of
-// inputs[inputIdx] and populates m.popover. Cached API hits from prior
-// queries are merged in immediately; the live API fetch is scheduled by
-// the caller via the suggestSeq tick. Nil-ed when the input is too short
-// or the matcher is unavailable.
+// inputs[inputIdx] and populates m.popover. Pure local fzf — the SBB API
+// merge layer was removed once the embedded Wikidata enrichment covered
+// the cross-language and nickname cases the merge originally backfilled.
+// Nil-ed when the input is too short or the matcher is unavailable.
 func (m *appModel) refreshPopover(inputIdx int) {
 	if m.fuzzyIdx == nil {
 		m.popover = nil
@@ -502,7 +470,7 @@ func (m *appModel) refreshPopover(inputIdx int) {
 		m.popover = nil
 		return
 	}
-	matches := m.buildPopoverMatches(val)
+	matches := m.fuzzyIdx.Search(val, popoverRows, m.scoreCfg)
 	m.popover = &popoverState{
 		inputIdx: inputIdx,
 		matches:  matches,
@@ -530,26 +498,6 @@ func (m *appModel) commitPopoverSelection() {
 		m.lastToQuery = canonical
 	}
 	m.popover = nil
-}
-
-// fetchAPIHitsCmd asks the SBB locations endpoint for structured station
-// hits (UIC + name + icon) and returns an apiHitsMsg. The seq is propagated
-// back so a stale response can be ignored after newer keystrokes.
-func fetchAPIHitsCmd(inputIndex, seq int, query string) tea.Cmd {
-	return func() tea.Msg {
-		locs, err := api.FetchLocationsWithIDs(query)
-		if err != nil {
-			return apiHitsMsg{inputIndex: inputIndex, seq: seq, query: query, err: err}
-		}
-		hits := make([]querycache.Hit, 0, len(locs))
-		for _, l := range locs {
-			if l.UIC == "" || l.Name == "" {
-				continue
-			}
-			hits = append(hits, querycache.Hit{UIC: l.UIC, Name: l.Name, Icon: l.Icon})
-		}
-		return apiHitsMsg{inputIndex: inputIndex, seq: seq, query: query, hits: hits}
-	}
 }
 
 // fetchSuggestionsCmd asynchronously asks the API for station suggestions.

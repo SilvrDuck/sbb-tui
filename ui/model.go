@@ -11,7 +11,6 @@ import (
 
 	"github.com/necrom4/sbb-tui/config"
 	"github.com/necrom4/sbb-tui/model"
-	"github.com/necrom4/sbb-tui/ui/querycache"
 	"github.com/necrom4/sbb-tui/ui/stations"
 	"github.com/necrom4/sbb-tui/util"
 )
@@ -48,17 +47,6 @@ type dataMsg struct {
 type suggestionsMsg struct {
 	inputIndex int
 	names      []string
-	err        error
-}
-
-// apiHitsMsg carries SBB locations-API results for the fuzzy popover. The
-// seq number must match m.suggestSeq to guard against races when the user
-// has kept typing.
-type apiHitsMsg struct {
-	inputIndex int
-	seq        int
-	query      string
-	hits       []querycache.Hit
 	err        error
 }
 
@@ -112,15 +100,6 @@ type appModel struct {
 	scoreCfg        stations.ScoreConfig
 	popover         *popoverState
 	overwriteOnType [2]bool // when true, next typed rune clears From/To value first
-	apiCache        *querycache.Cache
-}
-
-// Close performs any shutdown-time persistence (currently: flushing the
-// on-disk query cache). Safe to call once after tea.Program.Run returns.
-func (m appModel) Close() {
-	if m.apiCache != nil {
-		_ = m.apiCache.Save()
-	}
 }
 
 // setOverwrite toggles the "refocused with content" affordance on inputs[idx]:
@@ -198,10 +177,6 @@ func NewModel(cfg config.Config) appModel {
 			// branch keeps both behaviours so a broken index does not
 			// brick the app.
 			m.fuzzy = false
-		}
-
-		if path, err := querycache.DefaultPath(); err == nil {
-			m.apiCache = querycache.Load(path)
 		}
 	}
 

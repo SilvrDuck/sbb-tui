@@ -26,9 +26,7 @@ top-3        89.7%
 
 | Area | Files | Purpose |
 |---|---|---|
-| Matcher engine | `ui/stations/*.go` | Index, fzf v2 wrapper, scoring, typo fallback |
-| API merge | `ui/merge.go` | Combine local fuzzy results with SBB API hits |
-| Query cache | `ui/querycache/cache.go` | Disk cache for SBB API responses (TTL'd) |
+| Matcher engine | `ui/stations/*.go` | Index, fzf v2 wrapper, scoring |
 | UI integration | `ui/model.go`, `update.go`, `view.go` | Popover render, refocus-overwrite, key handling |
 | Distillation | `scripts/distill_stations.py` | SBB CSV → slim JSON |
 | Enrichment | `scripts/fetch_wikidata_aliases.py` | Wikidata SPARQL fetch (per-station) |
@@ -277,75 +275,66 @@ step that lets each token match a different alias of the same
 station; not implemented (~30 lines + a highlight rule for which
 alias text to render).
 
-## The merge layer (`ui/merge.go`)
+## Merge layer — was present, then removed
 
-`buildPopoverMatches` is not pure local fzf — it stacks three
-sources of candidates before the popover is rendered:
+A separate "merge layer" used to sit between the local matcher and
+the popover. It stacked three candidate sources:
 
-1. **Local fzf** — the matcher described above, run against the
-   embedded enriched index. Always queried.
-2. **SBB locations API** — cache-backed at
-   `$XDG_CACHE_HOME/sbb-tui/api-queries.json`. For each UIC the API
-   returns:
-   - If the local matcher already found it: add `apiEndorsementBoost
-     = 600` to its score (with `-apiPos` so the API's own ordering
-     is preserved among co-endorsed hits).
-   - If the local matcher missed it AND the mode is train-class
-     (TRAIN/METRO/TRAM/RACK_RAILWAY/CABLE_RAILWAY): insert into the
-     candidate set with the user's typed query as the displayed
-     alias.
-3. **Damerau-Levenshtein typo fallback** — fires when the merged top
-   score is < 200. Edits up to distance 1 (short queries) or 2 (≥ 8
-   chars). 1-edit matches start near a confident fzf hit (`typoBase
-   = 400`), 2-edit at 300.
+1. **Local fzf** against the embedded index
+2. **SBB locations API endorsement** (cache-backed at
+   `$XDG_CACHE_HOME/sbb-tui/api-queries.json`): boost any UIC the
+   local matcher and the API both surfaced; insert train-class UICs
+   the local matcher missed.
+3. **Damerau-Levenshtein typo fallback**: when the merged top score
+   was < 200, fold in 1-2 edit distance matches.
 
-### Why the API merge was originally needed
+### Why it existed
 
-The picker landed *before* the Wikidata enrichment. At that point the
-local matcher could not resolve:
+The picker landed *before* Wikidata enrichment. At that point the
+local index could not resolve `genf`, `geneva`, `ginevra`,
+`cornavin`, `kloten` — none of those strings were in any of the
+canonical names we shipped. The SBB API knew about them internally.
+Merging filled the gap.
 
-- Cross-language queries — `genf`, `geneva`, `ginevra` had nothing
-  in the local index to subseq-match, but the SBB API knew that
-  internally they all resolved to UIC 8501008.
-- Station nicknames — `cornavin`, `kloten`, `eaux-vives` were not
-  aliased locally.
+### Why it was removed
 
-Without merge, `genf` returned zero local hits even though `Genève`
-was right there in the SBB API response.
+Once the Wikidata enrichment landed, the API merge became
+belt-and-suspenders:
 
-### What merge still provides
-
-| Pre-Wikidata role | Post-Wikidata status |
+| Pre-Wikidata role | Where it lives now |
 |---|---|
-| Cross-language city lookup (`genf` → Genève) | Local — Rule A |
-| Nicknames (`Cornavin`, `Kloten`) | Local — Rule B |
-| Cross-language transit words (`Flughafen` ↔ `Airport`) | Local — Rule C |
-| Airport IATA (`GVA`, `ZRH`) | Local — Rule D |
-| Typo tolerance (`barsel`, `lausnane`) | Still merge — Damerau fallback |
-| Data drift (new SBB stations) | Still merge — API insertion |
-| Stations missing from Wikidata | Still merge — API insertion |
+| Cross-language city lookup (`genf` → Genève) | Embedded — Rule A |
+| Nicknames (`Cornavin`, `Kloten`) | Embedded — Rule B |
+| Cross-language transit words (`Flughafen` ↔ `Airport`) | Embedded — Rule C |
+| Airport IATA (`GVA`, `ZRH`) | Embedded — Rule D |
+| Typo tolerance | Was Damerau fallback; removed (didn't pay off in practice) |
+| Data drift safety net | Removed; rebuild the dataset to fix |
 
-The cross-language and nickname work now lives in the embedded
-`stations.json`. Merge's "API insertion of foreign UICs" path
-mostly fires on edge cases. The typo fallback is unaffected and
-still load-bearing for queries with typos.
+`ui/merge.go`, `ui/querycache/` and `ui/stations/typo.go` are gone.
+`refreshPopover` calls `m.fuzzyIdx.Search` directly. `api/client.go`
+is back to its original shape — only `FetchLocations` for the
+non-fuzzy ghost-completion path. `--clear-cache` flag removed from
+the binary. `appModel.Close()` removed.
 
-### Cost / trade-off
+The picker is now pure local fzf against the enriched embedded
+index. Synchronous, no network, no on-disk cache, no async re-render
+mid-typing.
 
-One network round-trip per unique query (then cached forever). The
-fetch is async, so the popover doesn't block — but it triggers a
-re-render when the response arrives, which is a perceptible "jump"
-if the user types faster than the network responds.
+### Cost / trade-off accepted
 
-### Two reasonable paths for the maintainer
+- **Typo tolerance**: gone. `barsel` no longer surfaces Basel.
+  Empirically the Damerau fallback didn't help often enough to
+  justify keeping; in practice the user just retypes correctly.
+- **Data drift**: if SBB adds new stations between rebuilds, they
+  won't appear until the dataset is regenerated. With the build
+  pipeline at `scripts/build_data.sh` this is one command.
 
-- **Keep all three layers.** API merge is belt-and-suspenders now
-  but cheap. Typo fallback is critical. Existing code handles empty
-  cache gracefully.
-- **Drop the API layer, keep the typo fallback.** Removes the cache,
-  the async re-render, and `api/client.go`'s SBB resolver path. Loses
-  the data-drift safety net. With monthly Wikidata + SBB rebuilds,
-  drift is minimal.
+### If the maintainer wants the typo fallback back
+
+It was contained in `ui/stations/typo.go` (Damerau-Levenshtein with
+a first-letter pre-filter) and called from `ui/merge.go::mergeTypoMatches`.
+Both files are in git history at commit before the cleanup. The
+re-introduction is straightforward; the value is questionable.
 
 ## UX / picker UI
 
@@ -543,13 +532,6 @@ ChairliftPenalty: 200
    benefit. Breaks ties between similar short queries
    cleanly (e.g. `GVA` vs Grandval's `GVAL` abbreviation).
 
-### Typo fallback
-
-`ui/stations/typo.go` runs a Damerau-Levenshtein edit-distance
-fallback when the primary fzf pass returns < 3 hits. First-letter
-pre-filter (folded) keeps the candidate set small. Surfaces things
-like `lausnane` → Lausanne, `barsel` → Basel.
-
 ## Features summary
 
 | Feature | Source | Coverage |
@@ -559,8 +541,6 @@ like `lausnane` → Lausanne, `barsel` → Basel.
 | Airport word substitution | Wikidata Q1248784 labels | Genève-Aéroport, Zürich Flughafen |
 | IATA codes | Wikidata Q1335652 + P138 → P238 | GVA, ZRH (exhaustive — only 2 in SBB) |
 | Multi-token AND | manual fzf extended-mode | all queries with whitespace |
-| Typo tolerance | Damerau-Levenshtein fallback | activates when fzf returns < 3 |
-| API merge | SBB `/v1/locations` + on-disk cache | for queries with few local hits |
 | Description filtering | colon + length-cap | drops ~6 Wikidata description rows |
 | Popover overlay | ANSI-aware z-index splicing | start-screen and results-screen alike |
 | Refocus-overwrite | type-to-rewrite affordance | mimics browser URL bar UX |
