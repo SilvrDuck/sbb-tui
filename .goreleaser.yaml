@@ -4,6 +4,13 @@ project_name: sbb-tui
 
 before:
   hooks:
+    # Refresh the embedded station dataset (SBB Dienststellen distill +
+    # GTFS foreign-hub augment + Wikidata enrichment + merge) so every
+    # release ships with the latest data. If any data source is
+    # unreachable, the hook fails and the release aborts — preferable
+    # to silently shipping stale data. Runs locally on `goreleaser
+    # build --snapshot` too. ~10 minutes wall-clock (mostly Wikidata).
+    - bash scripts/build_data.sh
     - go mod tidy
 
 builds:
