@@ -50,7 +50,7 @@ Existing files modified:
 
 ## Data sources
 
-Three independent sources, all combined offline into a single
+Four independent sources, all combined offline into a single
 `stations.json` that is `//go:embed`'d into the Go binary.
 
 ### 1. SBB Service Points (`data.sbb.ch`)
@@ -92,7 +92,7 @@ Implementation notes (`scripts/fetch_wikidata_aliases.py`):
   parent is also in the station's `P131` set. Replaces an earlier
   brittle `re.sub("^Kanton …", "")` hand-curated filter.
 
-### 3. Wikidata — transit vocabulary (concept-level)
+### 4. Wikidata — transit vocabulary (concept-level)
 
 A *separate* fetch (`scripts/fetch_wikidata_vocab.py`) of five concept
 entities and their multilingual labels + altLabels:
@@ -111,19 +111,22 @@ merge step (next section) to strip wrapper words like `Bahnhof`,
 substitute language equivalents inside canonicals (`Zürich Flughafen`
 → `Zürich Aéroport`, `Zürich Airport`, …).
 
-## Pipeline — 4 stages, fully reproducible
+## Pipeline — 5 stages, fully reproducible
 
 ```
 ./scripts/build_data.sh
 ```
 
 1. **Distill** SBB CSV → `data/stations.json` (slim shape)
-2. **Fetch** Wikidata per-station enrichment → `data/wikidata-aliases.json`
+2. **Augment** with GTFS foreign hubs (Konstanz, Karlsruhe Hbf, …)
 3. **Fetch** Wikidata transit vocab → `data/wikidata-vocab.json`
-4. **Merge** all of the above → updated `data/stations.json` + copy
+4. **Fetch** Wikidata per-station enrichment → `data/wikidata-aliases.json`
+5. **Merge** all of the above → updated `data/stations.json` + copy
    to `ui/stations/stations.json` (for `//go:embed`)
 
-Each stage is idempotent. Wikidata fetches resume from prior output.
+Each stage is idempotent. Wikidata fetches resume from prior output —
+adding the GTFS layer in Stage 2 only triggers ~11 new Wikidata
+batches for the 2 617 new UICs on the next pipeline run.
 
 ### Merge rules (`scripts/merge_wikidata_aliases.py`)
 
@@ -536,10 +539,11 @@ ChairliftPenalty: 200
 
 | Feature | Source | Coverage |
 |---|---|---|
-| Cross-language city aliases | Wikidata P131 → city rdfs:label | 559 TRAIN stations enriched |
+| Cross-language city aliases | Wikidata P131 → city rdfs:label | 1 157 TRAIN stations enriched (incl. Konstanz → Constance/Costanza, Mulhouse → Mülhausen, Milano → Mailand/Milan) |
 | Station nicknames | Wikidata skos:altLabel + wrapper strip | most major stations have ≥ 1 nickname |
 | Airport word substitution | Wikidata Q1248784 labels | Genève-Aéroport, Zürich Flughafen |
 | IATA codes | Wikidata Q1335652 + P138 → P238 | GVA, ZRH (exhaustive — only 2 in SBB) |
+| Foreign hub coverage | GTFS `stops.txt` parents | 2 617 added (Konstanz, Karlsruhe, Milano Centrale, Paris-Est, …) |
 | Multi-token AND | manual fzf extended-mode | all queries with whitespace |
 | Description filtering | colon + length-cap | drops ~6 Wikidata description rows |
 | Popover overlay | ANSI-aware z-index splicing | start-screen and results-screen alike |
