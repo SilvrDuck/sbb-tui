@@ -68,7 +68,50 @@ Distilled at build time (`scripts/distill_stations.py`):
 Output: 48 451 rows with `{uic, name, abbr?, mode}`. Mode breakdown:
 BUS 44 646 / TRAIN 1 729 / TRAM 286 / METRO 80 / … / ELEVATOR 4.
 
-### 2. Wikidata — per-station enrichment
+### 2. Swiss GTFS timetable — foreign hub fill-in
+
+`opentransportdata.swiss` publishes the annual Swiss-wide timetable as
+a GTFS bundle (~180 MB). The bundle's `stops.txt` is the
+**timetable-period union of every stop touched by any trip** —
+including foreign train hubs SBB serves but doesn't operate
+(Konstanz, Karlsruhe Hbf, Stuttgart Hbf, Mulhouse, Milano Centrale,
+Paris-Est, Lindau-Reutin, Frankfurt Main Hbf, …). These are absent
+from the SBB Dienststellen dataset because that dataset only tracks
+SBB-operated stop points; Konstanz appears there only as a ticketing
+reference (`stopPoint=false`, `meansOfTransport=""`,
+`hasGeolocation=false`).
+
+GTFS is *additive* on top of Dienststellen, not a replacement:
+
+| Source | rows | what it has |
+|---|---|---|
+| SBB Dienststellen | 48 451 | mode + abbreviation + full Swiss bus/tram/chairlift coverage |
+| GTFS parent stations | 34 980 | foreign hubs, no `mode`, no `abbreviation` |
+| **overlap** | 32 363 | (canonicals 99.95 % identical) |
+| **GTFS-only added** | **2 617** | foreign train hubs |
+
+Stage 1b of the pipeline (`scripts/fetch_gtfs_stops.py`) streams the
+zip, extracts only `stops.txt`, filters to `location_type == "1"`
+(parent stations, not platforms), strips the `Parent` prefix off
+`stop_id` to recover the UIC, and appends rows whose UIC is not yet
+in `stations.json` with **`mode = "TRAIN"`** (heuristic: GTFS-only
+parents are overwhelmingly long-distance train stations; SBB
+Dienststellen already covers the BUS / TRAM / CHAIRLIFT long tail
+within Switzerland).
+
+Country prefix breakdown of the 2 617 added rows: 87xxxxx (FR) 1 945,
+80xxxxx (DE) 293, 85xxxxx (CH supplementary) 238, 14xxxxx 54, 83xxxxx
+(IT) 43, 81xxxxx (AT) 23, 11xxxxx 20.
+
+Bundle URL is hard-coded in `scripts/build_data.sh` as a `GTFS_URL`
+env-var-overridable default; SBB publishes a new `fp<YYYY>` bundle
+mid-December each year. Within a timetable period, the station set
+is stable — re-running the pipeline on different days yields the
+same set unless SBB issues a revision (`_v2`, `_v3`, …). The 1.4 GB
+`stop_times.txt` inside the bundle is never extracted; we only need
+`stops.txt`.
+
+### 3. Wikidata — per-station enrichment
 
 Linked **purely structurally via UIC** (`wdt:P722`): no name matching
 between our index and Wikidata anywhere. Per station we ask Wikidata
