@@ -1,0 +1,42 @@
+amends "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Builtins.pkl"
+
+local linters = new Mapping<String, Step> {
+  ["check-added-large-files"] = Builtins.check_added_large_files
+  ["check-merge-conflict"] = Builtins.check_merge_conflict
+  ["detect-private-key"] = Builtins.detect_private_key
+  ["end-of-file-fixer"] = Builtins.newlines
+  ["markdownlint-cli2"] {
+    glob = List("**/*.md")
+    exclude = List("CHANGELOG.md")
+    check = "markdownlint-cli2 {{files}}"
+    fix = "markdownlint-cli2 {{files}} --fix"
+    batch = true
+  }
+  ["go-fumpt"] = Builtins.go_fumpt
+  ["go-imports"] = Builtins.go_imports
+  ["golangci-lint"] = Builtins.golangci_lint
+  ["trailing-whitespace"] = Builtins.trailing_whitespace
+  ["taplo-format"] = Builtins.taplo_format
+  ["taplo-lint"] = Builtins.taplo
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps = linters
+  }
+  ["fix"] {
+    fix = true
+    steps = linters
+  }
+  ["check"] {
+    steps = linters
+  }
+  ["commit-msg"] {
+    steps {
+      ["conventional-commit"] = Builtins.check_conventional_commit
+    }
+  }
+}

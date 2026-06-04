@@ -4,7 +4,6 @@ TUI client for Switzerland's public transports timetables, inspired by the SBB/C
 
 ![demo](https://github.com/user-attachments/assets/fd8e5f24-e862-4d5e-bfa0-64017be8f959)
 
-
 ## ✨ Features
 
 - 📍 **Any station**: search connections between any Swiss (and neighbouring) public transport stations
@@ -129,7 +128,7 @@ Flags:
 
 > I travel 4 hours a day and often work from the train, passing through remote regions of Switzerland where loading the SBB website alone can take up to an entire minute before I've even had a chance to search for my next connection (back when I started building this, my cellular data plan provided me with 500kb/s at most in the city). On top of that, I love open source and disliked handing data over to corporations unnecessarily, so I loved the idea of a faster solution that only fetched the necessary data, the one I requested. One day, while exploring the idea of building my first TUI, I stumbled upon the incredible [Swiss public transport API](https://transport.opendata.ch/docs.html) and I knew I'd found the perfect occasion to start!
 
-## 🍻 HELP WANTED!
+## 🍻 HELP WANTED
 
 **SBB-TUI** is in constant improvement thanks to the work of many volunteers passionate about this little tool.
 This project is a very good playground for those who want to learn to collaborate in open source projects and improve the way they architecture their code and commit it. Whether you're a novice or a professional, don't be scared to hop on the train!

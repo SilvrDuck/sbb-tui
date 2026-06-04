@@ -1,13 +1,14 @@
 [tools]
 go = "latest"
 gofumpt = "latest"
-golangci-lint = "latest"
-pre-commit = "latest"
+hk = "latest"
 "go:golang.org/x/tools/cmd/godoc" = "latest"
 "go:golang.org/x/tools/cmd/goimports" = "latest"
+pkl = "latest"
 yq = "latest"
+taplo = "latest"
+golangci-lint = "latest"
 markdownlint-cli2 = "latest"
-"pipx:conventional-pre-commit" = "latest"
 
 [env]
 # Styles
@@ -26,20 +27,7 @@ _LINK_START = "\u001b]8;;"
 _LINK_SEP = "\u001b\\"
 _LINK_END = "\u001b]8;;\u001b\\"
 
-[tasks.init]
-description = "Install hooks and setup environment"
-run = "pre-commit install --install-hooks"
-
-[tasks.pre-commit-run]
-description = "Run a pre-commit hook by id"
-quiet = true
-usage = """
-arg "[hook-id]" help="pre-commit hook id to run"
-complete "hook-id" run="yq eval '.repos[].hooks[].id' .pre-commit-config.yaml"
-flag "-a --all-files" help="Run on all files"
-flag "--files <files>" help="Specify files to run on"
-"""
-run = "pre-commit run ${usage_hook_id} ${usage_all_files:+--all-files} ${usage_files:+--files ${usage_files}}"
+HK_MISE = 1
 
 [tasks.docs]
 description = "Serve godoc at http://localhost:6060"
@@ -50,20 +38,8 @@ echo "Open ${_LINK_START}${URL}${_LINK_SEP}${URL}${_LINK_END}"
 godoc -http=:6060
 '''
 
-[tasks."lint:markdown"]
-# Task defined in mise (instead of pre-commit hook) because we don't want it to fail, just warn.
-quiet = true
-usage = """
-arg "[files]" var=#true help="Files to lint, please include glob '!CONTRIBUTING'"
-flag "--fix" help="Fix errors"
-"""
-run = '''
-if [ -z "${usage_files}" ]; then
-  markdownlint-cli2 "**/*.md" "!CHANGELOG.md" ${usage_fix:+--fix}
-else
-  markdownlint-cli2 ${usage_files} ${usage_fix:+--fix}
-fi
-'''
+[tasks.pre-commit]
+run = "hk run pre-commit"
 
 [[hooks.enter]]
 # Verify all tools defined in [tools] are actually installed
@@ -85,3 +61,7 @@ if [ ! -f ".git/hooks/pre-commit" ] || ! grep -q "pre-commit" ".git/hooks/pre-co
   echo "Run '${_C_GREEN}mise run init${_S_RESET}' to enable pre-commit hooks."
 fi
 """
+
+[[hooks.postinstall]]
+# Automatically install/update hooks when tools are installed
+script = "hk install --mise"
