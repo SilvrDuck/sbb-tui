@@ -13,6 +13,7 @@ import (
 
 	"github.com/necrom4/sbb-tui/api"
 	"github.com/necrom4/sbb-tui/model"
+	"github.com/necrom4/sbb-tui/ui/stations"
 )
 
 // Update implements tea.Model.
@@ -191,11 +192,15 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "up":
-			if m.popover != nil && len(m.popover.matches) > 0 {
+			if m.popover != nil {
+				// Selection wraps through rows + the trailing sentinel,
+				// so a deliberate up-from-row-0 lands on "search remotely
+				// for '<query>'" which submits the literal typed text.
+				last := len(m.popover.rows)
 				if m.popover.selected > 0 {
 					m.popover.selected--
 				} else {
-					m.popover.selected = len(m.popover.matches) - 1
+					m.popover.selected = last
 				}
 				return m, nil
 			}
@@ -204,8 +209,9 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.detailScrollY = 0
 			}
 		case "down":
-			if m.popover != nil && len(m.popover.matches) > 0 {
-				if m.popover.selected < len(m.popover.matches)-1 {
+			if m.popover != nil {
+				last := len(m.popover.rows)
+				if m.popover.selected < last {
 					m.popover.selected++
 				} else {
 					m.popover.selected = 0
@@ -238,6 +244,25 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			userInput := m.inputs[msg.inputIndex].Value()
 			m.inputs[msg.inputIndex].SetSuggestions(adaptSuggestions(userInput, msg.names))
 		}
+		return m, nil
+
+	case remoteSuggestTickMsg:
+		if msg.seq != m.remoteSuggestSeq[msg.inputIndex] {
+			return m, nil
+		}
+		return m, fetchRemoteLocationsCmd(msg.inputIndex, msg.seq, m.inputs[msg.inputIndex].Value())
+
+	case remoteLocationsMsg:
+		if msg.seq != m.remoteSuggestSeq[msg.inputIndex] {
+			return m, nil
+		}
+		if msg.err != nil {
+			if m.popover != nil && m.popover.inputIdx == msg.inputIndex && m.popover.query == msg.query {
+				m.popover.remoteStatus = remoteError
+			}
+			return m, nil
+		}
+		m.mergeRemoteLocations(msg.inputIndex, msg.query, msg.locations)
 		return m, nil
 
 	case dataMsg:
@@ -418,6 +443,14 @@ func (m *appModel) updateInputs(msg tea.Msg) tea.Cmd {
 		*prev = val
 		if m.fuzzy {
 			m.refreshPopover(inputIdx)
+			if len(val) >= 2 {
+				m.remoteSuggestSeq[inputIdx]++
+				seq := m.remoteSuggestSeq[inputIdx]
+				idx := inputIdx
+				cmds = append(cmds, tea.Tick(suggestDebounce, func(time.Time) tea.Msg {
+					return remoteSuggestTickMsg{inputIndex: idx, seq: seq}
+				}))
+			}
 		} else if len(val) >= 2 {
 			m.suggestSeq[inputIdx]++
 			seq := m.suggestSeq[inputIdx]
@@ -449,10 +482,10 @@ func (m appModel) validateInputs() error {
 }
 
 // refreshPopover runs the local fuzzy matcher against the current value of
-// inputs[inputIdx] and populates m.popover. Pure local fzf — the SBB API
-// merge layer was removed once the embedded Wikidata enrichment covered
-// the cross-language and nickname cases the merge originally backfilled.
-// Nil-ed when the input is too short or the matcher is unavailable.
+// inputs[inputIdx] and populates m.popover with the local rows. The async
+// /v1/locations back-fill is kicked off separately by updateInputs so the
+// remote rows can land later as a remoteLocationsMsg. Nil-ed when the input
+// is too short or the matcher is unavailable.
 func (m *appModel) refreshPopover(inputIdx int) {
 	if m.fuzzyIdx == nil {
 		m.popover = nil
@@ -471,11 +504,64 @@ func (m *appModel) refreshPopover(inputIdx int) {
 		return
 	}
 	matches := m.fuzzyIdx.Search(val, popoverRows, m.scoreCfg)
-	m.popover = &popoverState{
-		inputIdx: inputIdx,
-		matches:  matches,
-		selected: 0,
+	rows := make([]popoverRow, 0, len(matches))
+	for _, mm := range matches {
+		rows = append(rows, popoverRow{match: mm, source: sourceLocal})
 	}
+	m.popover = &popoverState{
+		inputIdx:     inputIdx,
+		rows:         rows,
+		selected:     0,
+		query:        val,
+		remoteStatus: remoteLoading,
+	}
+}
+
+// mergeRemoteLocations folds /v1/locations results into the current
+// popover, deduping by UIC (local rows win — they carry mode + aliases
+// + matched-rune positions the API can't give us). Address and POI rows
+// — which have no UIC — always pass through.
+func (m *appModel) mergeRemoteLocations(inputIdx int, query string, locs []api.Location) {
+	p := m.popover
+	if p == nil || p.inputIdx != inputIdx || p.query != query {
+		return
+	}
+	existing := make(map[string]bool, len(p.rows))
+	for _, r := range p.rows {
+		if r.source == sourceLocal && r.match.Station.UIC != "" {
+			existing[r.match.Station.UIC] = true
+		}
+	}
+	for _, loc := range locs {
+		src := sourceRemoteStation
+		mode := ""
+		switch loc.Type {
+		case "address":
+			src = sourceRemoteAddress
+			mode = "ADDRESS"
+		case "poi":
+			src = sourceRemotePOI
+			mode = "POI"
+		default:
+			mode = "STATION"
+		}
+		if loc.ID != "" && existing[loc.ID] {
+			continue
+		}
+		p.rows = append(p.rows, popoverRow{
+			match: stations.Match{
+				Station: stations.Station{
+					UIC:  loc.ID,
+					Name: loc.Name,
+					Mode: mode,
+				},
+				AliasText:    loc.Name,
+				MatchedRunes: stations.PositionsFor(query, loc.Name),
+			},
+			source: src,
+		})
+	}
+	p.remoteStatus = remoteDone
 }
 
 // popoverRows is the maximum number of rows shown in the fuzzy popover.
@@ -483,13 +569,19 @@ const popoverRows = 8
 
 // commitPopoverSelection replaces the focused input's value with the canonical
 // name of the highlighted popover row and clears the popover. No-op when the
-// popover is not visible or has no rows.
+// popover is hidden, empty, or when the sentinel row is selected (the user
+// explicitly chose "search remotely for the literal typed text").
 func (m *appModel) commitPopoverSelection() {
 	p := m.popover
-	if p == nil || len(p.matches) == 0 {
+	if p == nil || len(p.rows) == 0 {
 		return
 	}
-	canonical := p.matches[p.selected].Station.Name
+	// Sentinel row is the virtual position len(rows). Selecting it means
+	// "leave my input alone and submit it as typed".
+	if p.selected >= len(p.rows) {
+		return
+	}
+	canonical := p.rows[p.selected].match.Station.Name
 	m.inputs[p.inputIdx].SetValue(canonical)
 	m.inputs[p.inputIdx].SetCursor(len([]rune(canonical)))
 	if p.inputIdx == 0 {
@@ -505,6 +597,22 @@ func fetchSuggestionsCmd(inputIndex int, query string) tea.Cmd {
 	return func() tea.Msg {
 		names, err := api.FetchLocations(query)
 		return suggestionsMsg{inputIndex: inputIndex, names: names, err: err}
+	}
+}
+
+// fetchRemoteLocationsCmd backs the fuzzy popover's API-merge row by
+// asking /v1/locations for full Location rows. seq stamps the response
+// so out-of-order replies are dropped at message-handle time.
+func fetchRemoteLocationsCmd(inputIndex, seq int, query string) tea.Cmd {
+	return func() tea.Msg {
+		locs, err := api.SearchLocations(query)
+		return remoteLocationsMsg{
+			inputIndex: inputIndex,
+			seq:        seq,
+			query:      query,
+			locations:  locs,
+			err:        err,
+		}
 	}
 }
 

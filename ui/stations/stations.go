@@ -48,11 +48,11 @@ const (
 // fzf needs pre-built so we never reallocate on the hot path. We also keep
 // a pre-normalised folded form for the cheap prefix-bonus check.
 type alias struct {
-	text       string
-	folded     string // lowercased + diacritics stripped, used for prefix detection
-	chars      util.Chars
-	station    *Station
-	kind       aliasKind
+	text    string
+	folded  string // lowercased + diacritics stripped, used for prefix detection
+	chars   util.Chars
+	station *Station
+	kind    aliasKind
 }
 
 // Index is an in-memory store of stations and their queryable aliases.

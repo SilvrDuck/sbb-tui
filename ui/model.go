@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 
+	"github.com/necrom4/sbb-tui/api"
 	"github.com/necrom4/sbb-tui/config"
 	"github.com/necrom4/sbb-tui/model"
 	"github.com/necrom4/sbb-tui/ui/stations"
@@ -63,43 +64,95 @@ type versionCheckMsg struct {
 	newerVersion string
 }
 
+// rowSource identifies where a popover row came from, controlling its
+// leading-glyph marker and whether commitPopoverSelection writes back a
+// UIC or a free-form name.
+type rowSource int
+
+const (
+	sourceLocal rowSource = iota
+	sourceRemoteStation
+	sourceRemoteAddress
+	sourceRemotePOI
+)
+
+// popoverRow is one displayable row in the picker — either a local fuzzy
+// match (sourceLocal) or a remote /v1/locations row synthesised into a
+// stations.Match shape so the renderer can stay uniform.
+type popoverRow struct {
+	match  stations.Match
+	source rowSource
+}
+
+// remoteState tracks the lifecycle of the async /v1/locations back-fill
+// for the current query. Drives the sentinel row's label.
+type remoteState int
+
+const (
+	remoteIdle remoteState = iota
+	remoteLoading
+	remoteDone
+	remoteError
+)
+
 // popoverState carries the fuzzy-picker overlay shown under a focused
 // From/To input. Non-nil only while the popover is visible.
 type popoverState struct {
-	inputIdx int              // 0 = from, 1 = to
-	matches  []stations.Match // top-N local fuzzy matches for the current input value
-	selected int              // 0-based highlight index
+	inputIdx     int          // 0 = from, 1 = to
+	rows         []popoverRow // local matches followed by deduped remote rows
+	selected     int          // 0-based highlight index into rows
+	query        string       // query the rows + remote status reflect
+	remoteStatus remoteState
+}
+
+// remoteSuggestTickMsg fires after the debounce window so we know whether
+// to spend a /v1/locations round-trip on the current input value.
+type remoteSuggestTickMsg struct {
+	inputIndex int
+	seq        int
+}
+
+// remoteLocationsMsg carries the API response for the popover's back-fill
+// query. seq matches the model's remoteSuggestSeq at request time; out-of-
+// order responses are dropped.
+type remoteLocationsMsg struct {
+	inputIndex int
+	seq        int
+	query      string
+	locations  []api.Location
+	err        error
 }
 
 // appModel is the Bubbletea model that backs the whole TUI.
 type appModel struct {
-	width          int
-	height         int
-	tabIndex       int
-	resultIndex    int
-	detailScrollY  int
-	headerOrder    []focusable
-	inputs         []textinput.Model
-	icons          iconSet
-	styles         styles
-	nerdFont       bool
-	isArrivalTime  bool
-	connections    []model.Connection
-	loading        bool
-	errorMsg       error
-	searched       bool
-	lastFromQuery  string
-	lastToQuery    string
-	suggestSeq     [2]int
-	currentVersion string
-	newerVersion   string
-	animations     bool
-	anim           animator
-	fuzzy           bool
-	fuzzyIdx        *stations.Index
-	scoreCfg        stations.ScoreConfig
-	popover         *popoverState
-	overwriteOnType [2]bool // when true, next typed rune clears From/To value first
+	width            int
+	height           int
+	tabIndex         int
+	resultIndex      int
+	detailScrollY    int
+	headerOrder      []focusable
+	inputs           []textinput.Model
+	icons            iconSet
+	styles           styles
+	nerdFont         bool
+	isArrivalTime    bool
+	connections      []model.Connection
+	loading          bool
+	errorMsg         error
+	searched         bool
+	lastFromQuery    string
+	lastToQuery      string
+	suggestSeq       [2]int
+	remoteSuggestSeq [2]int
+	currentVersion   string
+	newerVersion     string
+	animations       bool
+	anim             animator
+	fuzzy            bool
+	fuzzyIdx         *stations.Index
+	scoreCfg         stations.ScoreConfig
+	popover          *popoverState
+	overwriteOnType  [2]bool // when true, next typed rune clears From/To value first
 }
 
 // setOverwrite toggles the "refocused with content" affordance on inputs[idx]:

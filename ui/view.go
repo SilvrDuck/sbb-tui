@@ -435,10 +435,6 @@ func (m appModel) renderPopover(maxRows int) string {
 
 	box := m.styles.active.UnsetPadding().Padding(0, 0).Width(popoverWidth - borderSize)
 
-	if len(p.matches) == 0 {
-		return indentLines(box.Render("  "+m.styles.textMuted.Render("no match")), popoverLeft)
-	}
-
 	highlightStyle := lipgloss.NewStyle().Foreground(m.styles.active.GetBorderTopForeground()).Bold(true)
 	canonStyle := m.styles.text.Bold(true)
 	modeStyle := m.styles.textMuted
@@ -447,7 +443,7 @@ func (m appModel) renderPopover(maxRows int) string {
 
 	// Column positions relative to popover content frame (= screen col - popoverLeft - 1).
 	const contentBorder = 1
-	aliasCol := valueOffsetInBox - contentBorder         // = 3 in content frame
+	aliasCol := valueOffsetInBox - contentBorder // = 3 in content frame
 	arrowCol := arrowScreenCol - popoverLeft - contentBorder
 	canonCol := arrowCol + 2
 	modeCol := modeScreenStart - popoverLeft - contentBorder
@@ -461,9 +457,9 @@ func (m appModel) renderPopover(maxRows int) string {
 		canonW = 4
 	}
 
-	matches := p.matches
-	if maxRows > 0 && len(matches) > maxRows {
-		matches = matches[:maxRows]
+	rows := p.rows
+	if maxRows > 0 && len(rows) > maxRows {
+		rows = rows[:maxRows]
 	}
 
 	// When alias equals canonical (the typical case — no cross-language
@@ -484,12 +480,24 @@ func (m appModel) renderPopover(maxRows int) string {
 	queryFolded := stations.FoldQuery(m.inputs[p.inputIdx].Value())
 
 	var lines []string
-	for i, mm := range matches {
+	for i, r := range rows {
+		mm := r.match
 		canonFolded := stations.FoldQuery(mm.Station.Name)
 		sameAsCanon := mm.AliasText == mm.Station.Name ||
 			(queryFolded != "" && strings.Contains(canonFolded, queryFolded))
 
-		modePart := lipgloss.PlaceHorizontal(modeBadgeW, lipgloss.Left, modeStyle.Render(mm.Station.Mode))
+		// Remote rows get the ⌕ glyph baked into the mode badge to mark
+		// them as API-sourced; local rows render mode as-is. Long modes
+		// (CABLE_RAILWAY, RACK_RAILWAY) are truncated with the same
+		// "…" treatment used elsewhere instead of a hand-curated
+		// display map — keeps the canonical mode string in storage so
+		// ScoreConfig.ModeBonus lookups don't need a parallel mapping.
+		modeLabel := mm.Station.Mode
+		if r.source != sourceLocal {
+			modeLabel = m.icons.search + " " + mm.Station.Mode
+		}
+		modeLabel, _ = truncateRunes(modeLabel, modeBadgeW, nil)
+		modePart := lipgloss.PlaceHorizontal(modeBadgeW, lipgloss.Left, modeStyle.Render(modeLabel))
 
 		var b strings.Builder
 		if i == p.selected {
@@ -542,8 +550,43 @@ func (m appModel) renderPopover(maxRows int) string {
 		lines = append(lines, b.String())
 	}
 
+	// Sentinel row — always rendered, sits at the virtual position
+	// len(rows) so the user can arrow down past every match and hit Enter
+	// to submit their literal typed text (bypassing fuzzy resolution).
+	// Solves both the "no match" dead-end and the "wrong match overrode my
+	// input" footguns.
+	sentinelSelected := p.selected >= len(rows)
+	lines = append(lines, m.renderPopoverSentinel(p, sentinelSelected, markerStyle))
+
 	block := lipgloss.JoinVertical(lipgloss.Left, lines...)
 	return indentLines(box.Render(block), popoverLeft)
+}
+
+// renderPopoverSentinel produces the always-visible last row of the
+// popover, which surfaces the /v1/locations back-fill status AND acts
+// as a selectable "submit as typed" affordance.
+func (m appModel) renderPopoverSentinel(p *popoverState, selected bool, markerStyle lipgloss.Style) string {
+	icon := m.icons.search
+	muted := m.styles.textMuted
+	q := p.query
+
+	var label string
+	switch p.remoteStatus {
+	case remoteLoading:
+		label = icon + " searching remotely for \"" + q + "\"…"
+	case remoteError:
+		label = icon + " remote search failed — retry on next keystroke"
+	default:
+		label = icon + " search remotely for \"" + q + "\""
+	}
+
+	var prefix string
+	if selected {
+		prefix = " " + markerStyle.Render("▶") + " "
+		return prefix + m.styles.text.Render(label)
+	}
+	prefix = "   "
+	return prefix + muted.Render(label)
 }
 
 // indentLines prepends pad spaces to every line of s.
